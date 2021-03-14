@@ -6,10 +6,9 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 5
-	var double id
 	var String pregunta
-	var double respuestaCorrecta
-	var List<Respuesta> opciones = newArrayList
+	var String respuestaCorrecta
+	var List<String> opciones = newArrayList
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@Accessors var Usuario autor
 	
@@ -18,11 +17,11 @@ abstract class Pregunta extends Entidad{
 		LocalDateTime.now().isAfter(vencimiento)
 	}
 	
-	def boolean esRespuestaCorrecta(double respuestaId){
-		respuestaId.equals(respuestaCorrecta)
+	def boolean esRespuestaCorrecta(String respuesta){
+		respuesta.equals(respuestaCorrecta)
 	}
 	
-	def void responder(Usuario participante, double respuestaId)
+	def void responder(Usuario participante, String respuesta)
 }
 
 
@@ -30,8 +29,8 @@ abstract class Pregunta extends Entidad{
 class PreguntaSimple extends Pregunta{
 	static final float puntos = 10
 	
-	override responder(Usuario participante, double respuestaId){
-		esRespuestaCorrecta(respuestaId) ? participante.agregarPuntos(puntos)
+	override responder(Usuario participante, String respuesta){
+		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
 	}
 }
 
@@ -41,8 +40,8 @@ class PreguntaRiesgosa extends Pregunta{
 	static final float puntos = 100
 	static final float puntosEnRiesgo = 50
 	
-	override responder(Usuario participante, double respuestaId){
-		if(esRespuestaCorrecta(respuestaId)){
+	override responder(Usuario participante, String respuesta){
+		if(esRespuestaCorrecta(respuesta)){
 			if(esRespuestaRapida){
 				this.autor.quitarPuntos(puntosEnRiesgo)
 			}
@@ -68,8 +67,8 @@ class PreguntaSolidaria extends Pregunta{
 		this.puntos = puntos
 	}
 	
-	override responder(Usuario participante, double respuestaId){
-		esRespuestaCorrecta(respuestaId) ? participante.agregarPuntos(puntos)
+	override responder(Usuario participante, String respuesta){
+		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
 	}
 }
 
