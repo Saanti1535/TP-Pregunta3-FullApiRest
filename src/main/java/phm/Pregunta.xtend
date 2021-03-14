@@ -4,11 +4,12 @@ import java.util.List
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 
-abstract class Pregunta {
+abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 5
+	var double id
 	var String pregunta
-	var String respuestaCorrecta
-	var List<String> opciones = newArrayList
+	var double respuestaCorrecta
+	var List<Respuesta> opciones = newArrayList
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@Accessors var Usuario autor
 	
@@ -17,11 +18,11 @@ abstract class Pregunta {
 		LocalDateTime.now().isAfter(vencimiento)
 	}
 	
-	def boolean esRespuestaCorrecta(String respuesta){
-		respuesta.equals(respuestaCorrecta)
+	def boolean esRespuestaCorrecta(double respuestaId){
+		respuestaId.equals(respuestaCorrecta)
 	}
 	
-	def void responder(Usuario participante, String respuesta)
+	def void responder(Usuario participante, double respuestaId)
 }
 
 
@@ -29,8 +30,8 @@ abstract class Pregunta {
 class PreguntaSimple extends Pregunta{
 	static final float puntos = 10
 	
-	override responder(Usuario participante, String respuesta){
-		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
+	override responder(Usuario participante, double respuestaId){
+		esRespuestaCorrecta(respuestaId) ? participante.agregarPuntos(puntos)
 	}
 }
 
@@ -40,13 +41,13 @@ class PreguntaRiesgosa extends Pregunta{
 	static final float puntos = 100
 	static final float puntosEnRiesgo = 50
 	
-	override responder(Usuario participante, String respuesta){
-		if(esRespuestaCorrecta(respuesta)){
+	override responder(Usuario participante, double respuestaId){
+		if(esRespuestaCorrecta(respuestaId)){
 			if(esRespuestaRapida){
 				this.autor.quitarPuntos(puntosEnRiesgo)
 			}
 		 	participante.agregarPuntos(puntos)
-		 	}
+		}
 	}
 	
 	def boolean esRespuestaRapida(){
@@ -67,8 +68,8 @@ class PreguntaSolidaria extends Pregunta{
 		this.puntos = puntos
 	}
 	
-	override responder(Usuario participante, String respuesta){
-		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
+	override responder(Usuario participante, double respuestaId){
+		esRespuestaCorrecta(respuestaId) ? participante.agregarPuntos(puntos)
 	}
 }
 

@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
-class Usuario {
+class Usuario extends Entidad {
 	String nombre
 	String apellido
 	LocalDate fechaNacimiento
