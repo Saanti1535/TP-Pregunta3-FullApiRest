@@ -5,6 +5,8 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
 class Usuario extends Entidad {
+	@Accessors String username
+	@Accessors String password
 	String nombre
 	String apellido
 	LocalDate fechaNacimiento

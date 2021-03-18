@@ -22,3 +22,23 @@ class Repositorio<T extends Entidad> {
 	}
 	
 }
+
+class RepositorioUsuarios extends Repositorio<Usuario>{
+	static RepositorioUsuarios repositorioUsuarios
+
+	def static RepositorioUsuarios getInstance() {
+		if (repositorioUsuarios === null) {
+			repositorioUsuarios = new RepositorioUsuarios
+		}
+		repositorioUsuarios
+	}
+
+   def Usuario buscarPorNombreDeUsuario(String nombreUsuario){
+   	   lista.findFirst(usuario | usuario.username == nombreUsuario)
+   }  
+   
+   def boolean existeUsuarioConNombreDeUsuario(String nombreUsuario){
+   	   lista.exists[usuario | usuario.username == nombreUsuario]
+   } 
+    
+}
