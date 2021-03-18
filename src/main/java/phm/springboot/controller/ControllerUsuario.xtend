@@ -15,17 +15,19 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import phm.RepositorioUsuarios
 import phm.Usuario
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
 
 @RestController
 @CrossOrigin
 class ControllerUsuario {
 	
 	@PostMapping("/login/{nombreUsuario}")
-	def usuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
+	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
 		try {
 			val repoUsuarios = RepositorioUsuarios.instance
 			if(!repoUsuarios.existeUsuarioConNombreDeUsuario(nombreUsuario)){
-				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
+				return new ResponseEntity<String>("Usuario o contraseï¿½a incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}
 			
 			var Usuario usuario = repoUsuarios.buscarPorNombreDeUsuario(nombreUsuario)
@@ -37,14 +39,55 @@ class ControllerUsuario {
 			if(usuario.password == claveRecibida){
 				ResponseEntity.ok(usuario)				
 			}else{
-				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
+				return new ResponseEntity<String>("Usuario o contraseï¿½a incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}
 		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+			return new ResponseEntity<String>("No se pudo completar la acciï¿½n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 	
+	
+	@GetMapping("/perfil/{id}")
+	def getUsuarioPorId(@PathVariable Integer id) {
+		try {
+			val repoUsuarios = RepositorioUsuarios.instance
+			var Usuario usuario 
+			try{
+				usuario = repoUsuarios.getById(id)
+			}catch (Exception e){
+				return new ResponseEntity<String>("Id de usuario inexistente", HttpStatus.BAD_REQUEST)			
+			}
+			if(usuario.id === id){
+				ResponseEntity.ok(usuario)				
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acciÃ³n", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	
+	@PutMapping("/perfil/{id}")
+	def updateUsuarioPorId(@RequestBody String body, @PathVariable Integer id) {
+		try {			
+			if(id === null){
+				return new ResponseEntity<String>("No existe el usuario", HttpStatus.BAD_REQUEST)
+			}
+			
+			val repoUsuarios = RepositorioUsuarios.instance
+			val actualizado = mapper.readValue(body, Usuario)
+			actualizado.password=repoUsuarios.getById(id).password
 
+			if(id !== actualizado.id){
+				return new ResponseEntity<String>("Error al actualizar el usuario", HttpStatus.INTERNAL_SERVER_ERROR)
+			}else{
+				repoUsuarios.update(actualizado)
+			}
+			
+			ResponseEntity.ok(mapper.writeValueAsString(actualizado))						
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acciÃ³n", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
 	
 	/****GENERALES***/
 		
