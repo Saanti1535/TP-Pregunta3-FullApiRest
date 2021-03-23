@@ -14,7 +14,7 @@ abstract class Pregunta extends Entidad{
 	
 	def boolean estaActiva(){
 		var LocalDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
-		LocalDateTime.now().isAfter(vencimiento)
+		LocalDateTime.now().isBefore(vencimiento)
 	}
 	
 	def boolean esRespuestaCorrecta(String respuesta){
@@ -29,6 +29,8 @@ abstract class Pregunta extends Entidad{
 class PreguntaSimple extends Pregunta{
 	static final float puntos = 10
 	
+	
+	//HACER TEMPLATE 
 	override responder(Usuario participante, String respuesta){
 		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
 	}
@@ -51,13 +53,13 @@ class PreguntaRiesgosa extends Pregunta{
 	
 	def boolean esRespuestaRapida(){
 		var LocalDateTime tiempoLimite = fechaHoraDeCreacion.plusMinutes(minutosDeRiesgo)
-		LocalDateTime.now().isAfter(tiempoLimite)
+		LocalDateTime.now().isBefore(tiempoLimite)
 	}
 }
 
 
-// Los puntos los define el autor o deja que cada participante lo haga a la hora de responder?
-// "Donar" los puntos significa que esos puntos se le quitan al autor tambien?
+// Los puntos los define el autor o deja que cada participante lo haga a la hora de responder? -- depende edl autor
+// "Donar" los puntos significa que esos puntos se le quitan al autor tambien? -- restar al autor
 /**** De esta forma, los puntos los indica el autor y no se le quitan a él si se responde bien */
 class PreguntaSolidaria extends Pregunta{
 	final float puntos

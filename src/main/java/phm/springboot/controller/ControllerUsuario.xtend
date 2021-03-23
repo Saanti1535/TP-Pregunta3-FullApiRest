@@ -55,7 +55,8 @@ class ControllerUsuario {
 			try{
 				usuario = repoUsuarios.getById(id)
 			}catch (Exception e){
-				return new ResponseEntity<String>("Id de usuario inexistente", HttpStatus.BAD_REQUEST)			
+				//Chequear bien qué excepciones son catcheables acá (a ver cuál es la más adecuada)
+				return new ResponseEntity<String>("Id de usuario inexistente", HttpStatus.NOT_FOUND)			
 			}
 			if(usuario.id === id){
 				ResponseEntity.ok(usuario)				
@@ -69,16 +70,17 @@ class ControllerUsuario {
 	@PutMapping("/perfil/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Integer id) {
 		try {			
+			//Chequear si puede pasar que exista un ID null 
 			if(id === null){
-				return new ResponseEntity<String>("No existe el usuario", HttpStatus.BAD_REQUEST)
+				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
 			}
 			
 			val repoUsuarios = RepositorioUsuarios.instance
 			val actualizado = mapper.readValue(body, Usuario)
-			actualizado.password=repoUsuarios.getById(id).password
+			actualizado.password = repoUsuarios.getById(id).password
 
 			if(id !== actualizado.id){
-				return new ResponseEntity<String>("Error al actualizar el usuario", HttpStatus.INTERNAL_SERVER_ERROR)
+				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
 			}else{
 				repoUsuarios.update(actualizado)
 			}

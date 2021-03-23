@@ -5,7 +5,7 @@ import java.util.List
 
 class Repositorio<T extends Entidad> {
 	@Accessors List<T> lista = newArrayList
-	@Accessors Integer id = 0
+	@Accessors long id = 0
 	
 
 	def create(T object) {
@@ -16,19 +16,19 @@ class Repositorio<T extends Entidad> {
 
 	def delete(T object) {
 		// lista.remove(object)
-		getById(object.id as int).bajaLogica = true
+		getById(object.id).bajaLogica = true
 	}
 	
 	def hardDelete(T object) {
 		lista.remove(object)
 	}
 
-	def T getById(int id) {
-		lista.filter[elemento|elemento.id == id].get(0)
+	def T getById(long id) {
+		lista.findFirst[ elemento | elemento.id == id ]
 	}
 	
 	def update(T object) {
-		val index = lista.indexOf(getById(object.id as int))
+		val index = lista.indexOf(getById(object.id))
 		try {
 			hardDelete(object)
 		} catch (Exception e) {
