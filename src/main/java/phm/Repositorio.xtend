@@ -77,4 +77,8 @@ class RepositorioPreguntas extends Repositorio<Pregunta>{
 		repositorioPreguntas
 	}
 	
+	def todasLasPreguntas(){
+		return lista
+	}
+	
 }

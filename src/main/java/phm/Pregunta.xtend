@@ -6,7 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 5
-	var String pregunta
+	@Accessors var String pregunta
 	var String respuestaCorrecta
 	var List<String> opciones = newArrayList
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
