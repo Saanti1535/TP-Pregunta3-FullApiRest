@@ -12,6 +12,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.google.gson.JsonObject
 import phm.Pregunta
+import org.springframework.web.bind.annotation.PathVariable
 
 @RestController
 @CrossOrigin
@@ -53,4 +54,22 @@ class ControllerPregunta {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
+	
+	@GetMapping("/busqueda/pregunta/{id}")
+	def preguntaPorId(@PathVariable int id) {
+		try {
+			val repoPreguntas = RepositorioPreguntas.instance
+			var Pregunta pregunta
+			try{
+				pregunta = repoPreguntas.getById(id)
+			}catch (Exception e){
+				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
+			}
+			ResponseEntity.ok(pregunta)				
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	
 }

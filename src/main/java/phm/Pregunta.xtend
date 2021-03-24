@@ -4,6 +4,7 @@ import java.util.List
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 5
 	@Accessors var String pregunta
