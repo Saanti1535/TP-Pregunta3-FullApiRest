@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 class Usuario extends Entidad {
 	@Accessors String username
 	@Accessors String password

@@ -77,8 +77,16 @@ class RepositorioPreguntas extends Repositorio<Pregunta>{
 		repositorioPreguntas
 	}
 	
-	def todasLasPreguntas(){
-		return lista
+	def getTodasLasPreguntas(){
+		lista
+	}
+	
+	def getPreguntasActivas() {
+		lista.filter(pregunta | pregunta.estaActiva)
+	}
+	
+	def List<Pregunta> search(String busqueda) {
+		return lista.filter[preguntaContieneString(busqueda)].toList()
 	}
 	
 }

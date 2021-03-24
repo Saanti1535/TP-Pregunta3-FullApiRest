@@ -22,6 +22,10 @@ abstract class Pregunta extends Entidad{
 	}
 	
 	def void responder(Usuario participante, String respuesta)
+	
+	def Boolean preguntaContieneString(String busqueda){
+		return pregunta.toLowerCase().contains(busqueda.toLowerCase())
+	}
 }
 
 
