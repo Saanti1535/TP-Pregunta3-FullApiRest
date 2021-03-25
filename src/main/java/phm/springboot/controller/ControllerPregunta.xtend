@@ -13,6 +13,8 @@ import com.google.gson.JsonParser
 import com.google.gson.JsonObject
 import phm.Pregunta
 import org.springframework.web.bind.annotation.PathVariable
+import phm.RepositorioUsuarios
+import phm.Usuario
 
 @RestController
 @CrossOrigin
@@ -68,6 +70,36 @@ class ControllerPregunta {
 			ResponseEntity.ok(pregunta)				
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	@PostMapping("/revisarRespuesta/{id}")
+	def loginUsuarioPorNombre(@RequestBody String respuesta, @PathVariable long id) {
+		try {
+			val repoPreguntas = RepositorioPreguntas.instance
+			
+			var Pregunta pregunta = repoPreguntas.getById(id)
+			
+        	var JsonElement jsonElement = new JsonParser().parse(respuesta);     
+        	var JsonObject jsonObject = jsonElement.getAsJsonObject();
+			var String laRespuesta = jsonObject.get("laRespuesta").asString
+			
+			jsonElement = new JsonParser().parse(respuesta);     
+        	jsonObject = jsonElement.getAsJsonObject();
+			var long idUsuario = jsonObject.get("idUsuario").asLong
+
+			val repoUsuarios = RepositorioUsuarios.instance
+			
+			var Usuario usuario = repoUsuarios.getById(idUsuario)
+			
+			if(pregunta.esRespuestaCorrecta(laRespuesta)){
+				pregunta.responder(usuario, laRespuesta)
+				ResponseEntity.ok('Correcto')				
+			}else{
+				ResponseEntity.ok('Incorrecto')
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 	

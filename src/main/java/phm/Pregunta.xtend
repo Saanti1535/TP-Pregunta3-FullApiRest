@@ -3,6 +3,7 @@ package phm
 import java.util.List
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @Accessors
 abstract class Pregunta extends Entidad{
@@ -12,6 +13,16 @@ abstract class Pregunta extends Entidad{
 	var List<String> opciones = newArrayList
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@Accessors var Usuario autor
+	
+	@JsonProperty("idAutor")
+	def getIdAutor(){
+		autor.id
+	}
+	
+	@JsonProperty("nombreAutor")
+	def String getNombreAutor(){
+		autor.nombre + ' ' + autor.apellido
+	}
 	
 	def boolean estaActiva(){
 		var LocalDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
