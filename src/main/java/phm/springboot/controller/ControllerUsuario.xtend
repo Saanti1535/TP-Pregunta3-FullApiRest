@@ -18,8 +18,8 @@ import phm.Usuario
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 
-@RestController
 @CrossOrigin
+@RestController
 class ControllerUsuario {
 	
 	@PostMapping("/login/{nombreUsuario}")
@@ -42,6 +42,19 @@ class ControllerUsuario {
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}
 		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	@GetMapping("/usuarios")
+	def getUsuarios(){
+		try {
+			
+			val repoUsuarios = RepositorioUsuarios.instance
+			val usuarios = repoUsuarios.lista.map(usuario | usuario.username)
+			
+			ResponseEntity.ok(usuarios)
+		} catch(Exception e){
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}

@@ -6,7 +6,6 @@ import java.util.List
 class Repositorio<T extends Entidad> {
 	@Accessors List<T> lista = newArrayList
 	@Accessors long id = 0
-	
 
 	def create(T object) {
 		lista.add(object)
