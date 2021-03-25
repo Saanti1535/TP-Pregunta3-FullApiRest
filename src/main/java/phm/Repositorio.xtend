@@ -20,7 +20,7 @@ class Repositorio<T extends Entidad> {
 	}
 	
 	def hardDelete(T object) {
-		lista.remove(object)
+		lista.remove(object) 
 	}
 
 	def T getById(long id) {

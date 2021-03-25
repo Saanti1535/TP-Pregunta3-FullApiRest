@@ -39,7 +39,7 @@ class ControllerUsuario {
 			if(usuario.password == claveRecibida){
 				ResponseEntity.ok(usuario)				
 			}else{
-				return new ResponseEntity<String>("Usuario o contrase�a incorrecto/a", HttpStatus.UNAUTHORIZED)
+				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -77,7 +77,9 @@ class ControllerUsuario {
 			
 			val repoUsuarios = RepositorioUsuarios.instance
 			val actualizado = mapper.readValue(body, Usuario)
+			actualizado.username = repoUsuarios.getById(id).username
 			actualizado.password = repoUsuarios.getById(id).password
+			actualizado.amigos = repoUsuarios.getById(id).amigos
 
 			if(id !== actualizado.id){
 				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
