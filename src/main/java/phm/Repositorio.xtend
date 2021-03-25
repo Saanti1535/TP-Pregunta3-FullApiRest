@@ -6,7 +6,6 @@ import java.util.List
 class Repositorio<T extends Entidad> {
 	@Accessors List<T> lista = newArrayList
 	@Accessors long id = 0
-	
 
 	def create(T object) {
 		lista.add(object)
@@ -20,7 +19,7 @@ class Repositorio<T extends Entidad> {
 	}
 	
 	def hardDelete(T object) {
-		lista.remove(object)
+		lista.remove(object) 
 	}
 
 	def T getById(long id) {
