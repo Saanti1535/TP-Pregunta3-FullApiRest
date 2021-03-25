@@ -15,6 +15,11 @@ import phm.Pregunta
 import org.springframework.web.bind.annotation.PathVariable
 import phm.RepositorioUsuarios
 import phm.Usuario
+import org.springframework.web.bind.annotation.PutMapping
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import phm.PreguntaSimple
 
 @RestController
 @CrossOrigin
@@ -104,4 +109,22 @@ class ControllerPregunta {
 	}
 	
 	
+	@PutMapping("/busqueda/pregunta/{id}")
+	def updatePreguntaPorId(@RequestBody String body, @PathVariable Integer id) {
+		try {			
+			if(id === null){
+				return new ResponseEntity<String>("Error de identificación de pregunta", HttpStatus.BAD_REQUEST)
+			}
+			val repoPreguntas = RepositorioPreguntas.instance
+			val pregunta = Mapper.mapear.readValue(body, PreguntaSimple)
+			
+			pregunta.autor = repoPreguntas.getById(id).autor
+			repoPreguntas.update(pregunta)
+			ResponseEntity.ok(Mapper.mapear.writeValueAsString(pregunta))						
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+
 }
