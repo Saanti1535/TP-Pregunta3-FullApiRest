@@ -41,7 +41,7 @@ abstract class Pregunta extends Entidad{
 	}
 	
 	def void modificarHistorial(Usuario participante, float puntos){
-		var RegistroRespuestas registro
+		var RegistroRespuestas registro = new RegistroRespuestas()
 		registro.pregunta = pregunta
 		registro.fechaRespuesta = LocalDate.now()
 		registro.puntosOtorgados = puntos

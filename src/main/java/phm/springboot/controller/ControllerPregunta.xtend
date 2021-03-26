@@ -14,8 +14,6 @@ import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.PutMapping
 import phm.PreguntaSimple
-import phm.RegistroRespuestas
-import java.time.LocalDate
 
 @RestController
 @CrossOrigin
@@ -87,17 +85,12 @@ class ControllerPregunta {
 			
 			var Usuario usuario = repoUsuarios.getById(idUsuario)
 			
-			var agregarAlHistorial = new RegistroRespuestas()
-			agregarAlHistorial.pregunta = pregunta.pregunta
-			agregarAlHistorial.fechaRespuesta = LocalDate.now()
-			agregarAlHistorial.puntosOtorgados=0
-			
-			usuario.historial.add(agregarAlHistorial)
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
 				pregunta.responder(usuario, laRespuesta)
 				ResponseEntity.ok('Correcto')				
 			}else{
+				pregunta.modificarHistorial(usuario, 0)
 				ResponseEntity.ok('Incorrecto')
 			}
 		} catch (Exception e) {

@@ -65,7 +65,6 @@ class Bootstrap {
 		crearUsuarios
 		crearHistoriales
 		crearPreguntas
-		crearHistoriales
 	}
 	
 /********************************************************* USUARIOS */
