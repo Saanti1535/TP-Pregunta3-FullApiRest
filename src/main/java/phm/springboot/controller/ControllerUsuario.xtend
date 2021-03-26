@@ -46,12 +46,14 @@ class ControllerUsuario {
 		}
 	}
 	
-	@GetMapping("/usuarios")
-	def getUsuarios(){
+	@GetMapping("/usuarios/{id}")
+	def getUsuarios(@PathVariable Integer id){
 		try {
 			
 			val repoUsuarios = RepositorioUsuarios.instance
-			val usuarios = repoUsuarios.lista.map(usuario | usuario.username)
+			val usuarios = repoUsuarios.lista.filter(usuario | usuario.id !== id).map(usuario | usuario.username).toList()
+			
+			System.out.println(usuarios)
 			
 			ResponseEntity.ok(usuarios)
 		} catch(Exception e){
@@ -59,7 +61,7 @@ class ControllerUsuario {
 		}
 	}
 	
-	
+	// Cambiar nombre de rutas
 	@GetMapping("/perfil/{id}")
 	def getUsuarioPorId(@PathVariable Integer id) {
 		try {

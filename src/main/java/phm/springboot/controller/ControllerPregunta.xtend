@@ -31,6 +31,7 @@ class ControllerPregunta {
 		}
 	}	
 	
+	//Unificar endpoints 
 	@GetMapping("/busqueda/preguntasActivas")
 	def getPreguntasActivas() {
 		try {
@@ -74,7 +75,7 @@ class ControllerPregunta {
 	}
 	
 	@PostMapping("/revisarRespuesta/{id}")
-	def loginUsuarioPorNombre(@RequestBody String respuesta, @PathVariable long id) {
+	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {
 		try {
 			val repoPreguntas = RepositorioPreguntas.instance
 			
