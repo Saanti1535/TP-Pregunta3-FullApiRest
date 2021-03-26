@@ -54,7 +54,7 @@ class RepositorioUsuarios extends Repositorio<Usuario>{
 
    	def Usuario buscarPorNombreDeUsuario(String nombreUsuario){
    	   lista.findFirst(usuario | usuario.username == nombreUsuario)
-   	}  
+   	}
    
    	def boolean existeUsuarioConNombreDeUsuario(String nombreUsuario){
    	   lista.exists[usuario | usuario.username == nombreUsuario]

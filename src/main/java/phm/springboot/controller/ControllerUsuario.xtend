@@ -1,8 +1,5 @@
 package phm.springboot.controller
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -46,15 +43,25 @@ class ControllerUsuario {
 		}
 	}
 	
-	@GetMapping("/usuarios/{id}")
-	def getUsuarios(@PathVariable Integer id){
+	@PostMapping("/usuarios/{id}")
+	def getUsuarios(@PathVariable Integer id, @RequestBody String busqueda){
 		try {
 			
+			var JsonElement jsonElement = new JsonParser().parse(busqueda);     
+        	var JsonObject jsonObject = jsonElement.getAsJsonObject();
+			val String usuarioABuscar = jsonObject.get("busqueda").asString
+			
 			val repoUsuarios = RepositorioUsuarios.instance
-			val usuarios = repoUsuarios.lista.filter(usuario | usuario.id !== id).map(usuario | usuario.username).toList()
-			
-			System.out.println(usuarios)
-			
+			val usuarioLogueado = repoUsuarios.getById(id)
+			val usuarios = repoUsuarios.lista
+			.filter(usuario | 
+				usuario.id !== id
+				&& !usuarioLogueado.amigos.exists(amigo | amigo.id === usuario.id)
+				&& usuario.username.toLowerCase().contains(usuarioABuscar.toLowerCase())
+			)
+			.map(usuario | usuario.username)
+			.toList()
+						
 			ResponseEntity.ok(usuarios)
 		} catch(Exception e){
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -89,13 +96,11 @@ class ControllerUsuario {
 			if(id === null){
 				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
 			}
-			
 			val repoUsuarios = RepositorioUsuarios.instance
 			val actualizado = Mapper.mapear.readValue(body, Usuario)
 			actualizado.username = repoUsuarios.getById(id).username
 			actualizado.password = repoUsuarios.getById(id).password
-			actualizado.amigos = repoUsuarios.getById(id).amigos
-
+			
 			if(id !== actualizado.id){
 				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
 			}else{

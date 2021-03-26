@@ -55,7 +55,6 @@ class Bootstrap {
 	def void run() {
 		jose.amigos.add(pep)
 		jose.amigos.add(juana)
-		jose.amigos.add(liliana)
 		pep.amigos.add(juana)
 		crearUsuarios
 		crearPreguntas

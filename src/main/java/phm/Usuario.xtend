@@ -4,10 +4,12 @@ import java.time.LocalDate
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 class Usuario extends Entidad {
 	@Accessors String username
+	@JsonIgnore
 	@Accessors String password
 	String nombre
 	String apellido
@@ -32,6 +34,13 @@ class Usuario extends Entidad {
 		var int dia = Integer.parseInt(parte.get(2))
 
 		this.fechaNacimiento = LocalDate.of(anio, mes, dia)
+	}
+	
+	@JsonProperty("amigos")
+	def void obtenerListaDeAmigos(List<String> amigos) {
+		amigos.forEach(amigo |
+			this.amigos.add(RepositorioUsuarios.instance.buscarPorNombreDeUsuario(amigo))
+		)
 	}
 
 }
