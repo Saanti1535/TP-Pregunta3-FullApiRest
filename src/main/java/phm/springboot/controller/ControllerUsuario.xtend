@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.PostMapping
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.GetMapping
@@ -29,9 +26,7 @@ class ControllerUsuario {
 			
 			var Usuario usuario = repoUsuarios.buscarPorNombreDeUsuario(nombreUsuario)
 			
-        	var JsonElement jsonElement = new JsonParser().parse(password);     
-        	var JsonObject jsonObject = jsonElement.getAsJsonObject();
-			var String claveRecibida = jsonObject.get("password").asString
+			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
 
 			if(usuario.password == claveRecibida){
 				ResponseEntity.ok(usuario)				
@@ -47,9 +42,7 @@ class ControllerUsuario {
 	def getUsuarios(@PathVariable Integer id, @RequestBody String busqueda){
 		try {
 			
-			var JsonElement jsonElement = new JsonParser().parse(busqueda);     
-        	var JsonObject jsonObject = jsonElement.getAsJsonObject();
-			val String usuarioABuscar = jsonObject.get("busqueda").asString
+			val String usuarioABuscar = Mapper.extraerStringDeJson(busqueda,"busqueda")
 			
 			val repoUsuarios = RepositorioUsuarios.instance
 			val usuarioLogueado = repoUsuarios.getById(id)

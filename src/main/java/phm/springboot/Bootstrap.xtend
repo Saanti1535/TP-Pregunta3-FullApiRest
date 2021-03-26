@@ -42,8 +42,8 @@ class Bootstrap {
 		puntaje=50;
 	]
 	
-	var pregunta01 = new PreguntaSimple => [ pregunta = "¿Cuál es el lugar más frío de la tierra?"; id = 1; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"]; autor=liliana;]
-	var pregunta02 = new PreguntaSimple => [ pregunta = "¿Cuál es el río más largo del mundo?"; id = 2; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=liliana;]
+	var pregunta01 = new PreguntaSimple => [ pregunta = "¿Cuál es el lugar más frío de la tierra?"; id = 1; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"]; autor=liliana; respuestaCorrecta="Opcion 2"]
+	var pregunta02 = new PreguntaSimple => [ pregunta = "¿Cuál es el río más largo del mundo?"; id = 2; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=liliana; respuestaCorrecta="Opcion 2"]
 	var pregunta03 = new PreguntaSimple => [ pregunta = "¿Cómo se llama la Reina del Reino Unido?"; id = 3; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=jose; respuestaCorrecta="Opcion 2"]
 	var pregunta04 = new PreguntaSimple => [ pregunta = "¿En qué continente está Ecuador?"; id = 4; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=pep; respuestaCorrecta="Opcion 2"]
 	var pregunta05 = new PreguntaSimple => [ pregunta = "¿Dónde originaron los juegos olímpicos?"; id = 5; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=pep; respuestaCorrecta="Opcion 2"]
@@ -51,9 +51,9 @@ class Bootstrap {
 	var pregunta07 = new PreguntaSimple => [ pregunta = "¿De qué colores es la bandera de México?"; id = 7; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 	var pregunta08 = new PreguntaSimple => [ pregunta = "¿Qué cantidad de huesos en el cuerpo humano?"; id = 8; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 		
-	var registro01 = new RegistroRespuestas => [id=1; pregunta = "¿Cuál es el lugar más frío de la tierra?";  fechaRespuesta = LocalDate.of(1990, 05, 09); puntosOtorgados = 100]
-	var registro02 = new RegistroRespuestas => [id=2; pregunta = "¿Dónde originaron los juegos olímpicos?";  fechaRespuesta = LocalDate.of(2000, 01, 25); puntosOtorgados = 500]
-	var registro03 = new RegistroRespuestas => [id=3; pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";  fechaRespuesta = LocalDate.of(2041, 11, 30); puntosOtorgados = 10]
+	var registro01 = new RegistroRespuestas => [pregunta = "¿Cuál es el lugar más frío de la tierra?";  fechaRespuesta = LocalDate.of(1990, 05, 09); puntosOtorgados = 100]
+	var registro02 = new RegistroRespuestas => [pregunta = "¿Dónde originaron los juegos olímpicos?";  fechaRespuesta = LocalDate.of(2000, 01, 25); puntosOtorgados = 500]
+	var registro03 = new RegistroRespuestas => [pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";  fechaRespuesta = LocalDate.of(2041, 11, 30); puntosOtorgados = 10]
 /**********************************************************/
 	def void run() {
 		jose.amigos.add(pep)
@@ -63,6 +63,7 @@ class Bootstrap {
 //		pep.historial.add(registro02)
 //		pep.historial.add(registro03)
 		crearUsuarios
+		crearHistoriales
 		crearPreguntas
 		crearHistoriales
 	}
