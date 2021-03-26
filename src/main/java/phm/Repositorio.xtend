@@ -14,7 +14,6 @@ class Repositorio<T extends Entidad> {
 	}
 
 	def delete(T object) {
-		// lista.remove(object)
 		getById(object.id).bajaLogica = true
 	}
 	
@@ -29,11 +28,12 @@ class Repositorio<T extends Entidad> {
 	def update(T object) {
 		val index = lista.indexOf(getById(object.id))
 		try {
-			hardDelete(object)
+			hardDelete(getById(object.id)) //Si se le manda el object directamente no funciona (porque ya viene modificado y no lo encuentra)
 		} catch (Exception e) {
 			throw new Exception("No se ha podido encontrar el id solicitado")
 		}
-		lista.add(index, object)
+			lista.add(index, object)
+		
 	}
 	
 }

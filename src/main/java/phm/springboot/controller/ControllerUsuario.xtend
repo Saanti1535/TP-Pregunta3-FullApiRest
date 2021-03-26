@@ -91,7 +91,7 @@ class ControllerUsuario {
 			}
 			
 			val repoUsuarios = RepositorioUsuarios.instance
-			val actualizado = mapper.readValue(body, Usuario)
+			val actualizado = Mapper.mapear.readValue(body, Usuario)
 			actualizado.username = repoUsuarios.getById(id).username
 			actualizado.password = repoUsuarios.getById(id).password
 			actualizado.amigos = repoUsuarios.getById(id).amigos
@@ -102,18 +102,11 @@ class ControllerUsuario {
 				repoUsuarios.update(actualizado)
 			}
 			
-			ResponseEntity.ok(mapper.writeValueAsString(actualizado))						
+			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 	
-	/****GENERALES***/
-		
-	static def mapper() {
-		new ObjectMapper => [
-			configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-			configure(SerializationFeature.INDENT_OUTPUT, true)
-		]
-	}	
+
 }
