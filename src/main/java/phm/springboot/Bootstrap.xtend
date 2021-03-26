@@ -59,9 +59,9 @@ class Bootstrap {
 		jose.amigos.add(pep)
 		jose.amigos.add(juana)
 		pep.amigos.add(juana)
-//		pep.historial.add(registro01)
-//		pep.historial.add(registro02)
-//		pep.historial.add(registro03)
+		pep.historial.add(registro01)
+		pep.historial.add(registro02)
+		pep.historial.add(registro03)
 		crearUsuarios
 		crearHistoriales
 		crearPreguntas

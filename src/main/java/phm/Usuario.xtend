@@ -16,7 +16,7 @@ class Usuario extends Entidad {
 	LocalDate fechaNacimiento
 	List<Usuario> amigos = newLinkedList
 	@Accessors float puntaje
-	@Accessors List<RegistroRespuestas> historial
+	@Accessors List<RegistroRespuestas> historial = newArrayList
 
 	def void agregarPuntos(float puntos) {
 		puntaje += puntos

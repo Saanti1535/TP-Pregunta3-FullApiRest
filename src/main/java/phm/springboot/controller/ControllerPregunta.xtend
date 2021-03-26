@@ -14,6 +14,8 @@ import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.PutMapping
 import phm.PreguntaSimple
+import phm.RegistroRespuestas
+import java.time.LocalDate
 
 @RestController
 @CrossOrigin
@@ -79,11 +81,18 @@ class ControllerPregunta {
 			var Pregunta pregunta = repoPreguntas.getById(id)
 			
 			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
-			var idUsuario = Mapper.extraerLongDeJson(respuesta, "laRespuesta")
+			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
 
 			val repoUsuarios = RepositorioUsuarios.instance
 			
 			var Usuario usuario = repoUsuarios.getById(idUsuario)
+			
+			var agregarAlHistorial = new RegistroRespuestas()
+			agregarAlHistorial.pregunta = pregunta.pregunta
+			agregarAlHistorial.fechaRespuesta = LocalDate.now()
+			agregarAlHistorial.puntosOtorgados=0
+			
+			usuario.historial.add(agregarAlHistorial)
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
 				pregunta.responder(usuario, laRespuesta)
