@@ -89,3 +89,17 @@ class RepositorioPreguntas extends Repositorio<Pregunta>{
 	}
 	
 }
+
+
+class RepositorioHistoriales extends Repositorio<RegistroRespuestas>{
+	static RepositorioHistoriales repositorioHistoriales
+	
+	private new(){}
+
+	def static RepositorioHistoriales getInstance() {
+		if (repositorioHistoriales === null) {
+			repositorioHistoriales = new RepositorioHistoriales
+		}
+		repositorioHistoriales
+	}
+}

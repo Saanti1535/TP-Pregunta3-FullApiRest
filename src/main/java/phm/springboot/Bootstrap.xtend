@@ -5,7 +5,8 @@ import phm.Usuario
 import phm.PreguntaSimple
 import phm.RepositorioPreguntas
 import java.time.LocalDate
-
+import phm.RegistroRespuestas
+import phm.RepositorioHistoriales
 
 class Bootstrap {
 	var liliana = new Usuario => [
@@ -50,16 +51,22 @@ class Bootstrap {
 	var pregunta07 = new PreguntaSimple => [ pregunta = "¿De qué colores es la bandera de México?"; id = 7; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 	var pregunta08 = new PreguntaSimple => [ pregunta = "¿Qué cantidad de huesos en el cuerpo humano?"; id = 8; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 		
-	
+	var registro01 = new RegistroRespuestas => [id=1; pregunta = "¿Cuál es el lugar más frío de la tierra?";  fechaRespuesta = LocalDate.of(1990, 05, 09); puntosOtorgados = 100]
+	var registro02 = new RegistroRespuestas => [id=2; pregunta = "¿Dónde originaron los juegos olímpicos?";  fechaRespuesta = LocalDate.of(2000, 01, 25); puntosOtorgados = 500]
+	var registro03 = new RegistroRespuestas => [id=3; pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";  fechaRespuesta = LocalDate.of(2041, 11, 30); puntosOtorgados = 10]
 /**********************************************************/
 	def void run() {
 		jose.amigos.add(pep)
 		jose.amigos.add(juana)
 		pep.amigos.add(juana)
+//		pep.historial.add(registro01)
+//		pep.historial.add(registro02)
+//		pep.historial.add(registro03)
 		crearUsuarios
 		crearPreguntas
+		crearHistoriales
 	}
-
+	
 /********************************************************* USUARIOS */
 	def void crearUsuarios() {
 		RepositorioUsuarios.instance => [
@@ -82,4 +89,12 @@ class Bootstrap {
 			create(pregunta08)
 		]	
 	}	
+	
+	def void crearHistoriales() {
+		RepositorioHistoriales.instance => [
+			create(registro01)
+			create(registro02)
+			create(registro03)
+		]
+	}
 }

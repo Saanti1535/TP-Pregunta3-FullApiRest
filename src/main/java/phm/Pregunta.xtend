@@ -4,6 +4,7 @@ import java.util.List
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDate
 
 @Accessors
 abstract class Pregunta extends Entidad{
@@ -38,6 +39,20 @@ abstract class Pregunta extends Entidad{
 	def Boolean preguntaContieneString(String busqueda){
 		return pregunta.toLowerCase().contains(busqueda.toLowerCase())
 	}
+	
+	def void modificarHistorial(Usuario participante, float puntos){
+		var RegistroRespuestas registro
+		registro.pregunta = pregunta
+		registro.fechaRespuesta = LocalDate.now()
+		registro.puntosOtorgados = puntos
+		
+		participante.historial.add(registro)
+	}
+	
+	def void agregarPuntos(Usuario participante, float puntos){
+		participante.agregarPuntos(puntos)
+		modificarHistorial(participante, puntos)
+	}
 }
 
 
@@ -48,7 +63,9 @@ class PreguntaSimple extends Pregunta{
 	
 	//HACER TEMPLATE 
 	override responder(Usuario participante, String respuesta){
-		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
+		if(esRespuestaCorrecta(respuesta)){
+			agregarPuntos(participante, puntos)
+		}
 	}
 }
 
@@ -63,7 +80,7 @@ class PreguntaRiesgosa extends Pregunta{
 			if(esRespuestaRapida){
 				this.autor.quitarPuntos(puntosEnRiesgo)
 			}
-		 	participante.agregarPuntos(puntos)
+		 	agregarPuntos(participante, puntos)
 		}
 	}
 	
@@ -86,7 +103,10 @@ class PreguntaSolidaria extends Pregunta{
 	}
 	
 	override responder(Usuario participante, String respuesta){
-		esRespuestaCorrecta(respuesta) ? participante.agregarPuntos(puntos)
+		if(esRespuestaCorrecta(respuesta)) {
+			agregarPuntos(participante, puntos)
+			autor.quitarPuntos(puntos)
+		}
 	}
 }
 
