@@ -65,7 +65,7 @@ class PreguntaSimple extends Pregunta{
 	override responder(Usuario participante, String respuesta){
 		if(esRespuestaCorrecta(respuesta)){
 			agregarPuntos(participante, puntos)
-		}
+		} else modificarHistorial(participante, 0)
 	}
 }
 
@@ -81,7 +81,7 @@ class PreguntaRiesgosa extends Pregunta{
 				this.autor.quitarPuntos(puntosEnRiesgo)
 			}
 		 	agregarPuntos(participante, puntos)
-		}
+		} else modificarHistorial(participante, 0)
 	}
 	
 	def boolean esRespuestaRapida(){
@@ -91,9 +91,6 @@ class PreguntaRiesgosa extends Pregunta{
 }
 
 
-// Los puntos los define el autor o deja que cada participante lo haga a la hora de responder? -- depende edl autor
-// "Donar" los puntos significa que esos puntos se le quitan al autor tambien? -- restar al autor
-/**** De esta forma, los puntos los indica el autor y no se le quitan a él si se responde bien */
 class PreguntaSolidaria extends Pregunta{
 	final float puntos
 		
@@ -106,7 +103,7 @@ class PreguntaSolidaria extends Pregunta{
 		if(esRespuestaCorrecta(respuesta)) {
 			agregarPuntos(participante, puntos)
 			autor.quitarPuntos(puntos)
-		}
+		} else modificarHistorial(participante, 0)
 	}
 }
 

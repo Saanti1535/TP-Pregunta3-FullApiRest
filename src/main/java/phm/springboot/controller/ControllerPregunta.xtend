@@ -85,12 +85,11 @@ class ControllerPregunta {
 			
 			var Usuario usuario = repoUsuarios.getById(idUsuario)
 			
+			pregunta.responder(usuario, laRespuesta)
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
-				pregunta.responder(usuario, laRespuesta)
 				ResponseEntity.ok('Correcto')				
 			}else{
-				pregunta.modificarHistorial(usuario, 0)
 				ResponseEntity.ok('Incorrecto')
 			}
 		} catch (Exception e) {
