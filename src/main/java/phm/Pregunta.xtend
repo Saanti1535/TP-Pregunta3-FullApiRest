@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 @Accessors
 abstract class Pregunta extends Entidad{
-	static final long minutosDeVigencia = 5
+	static final long minutosDeVigencia = 0
 	@Accessors var String pregunta
 	var String respuestaCorrecta
 	var List<String> opciones = newArrayList

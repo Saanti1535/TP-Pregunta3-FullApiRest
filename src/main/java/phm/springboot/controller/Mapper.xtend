@@ -17,17 +17,21 @@ class Mapper {
 	}
 	
 	static def extraerStringDeJson(String elJsonRecibido, String nombreDato){
-			return extraeDato(elJsonRecibido, nombreDato).asString
+		return extraeDato(elJsonRecibido, nombreDato).asString
 	}	
 	
 	static def extraerLongDeJson(String elJsonRecibido, String nombreDato){
-			return extraeDato(elJsonRecibido, nombreDato).asLong
+		return extraeDato(elJsonRecibido, nombreDato).asLong
+	}
+	
+	static def extraerBooleanDeJson(String elJsonRecibido, String nombreDato){
+		return extraeDato(elJsonRecibido, nombreDato).asBoolean
 	}
 	
 	static def extraeDato(String elJsonRecibido, String nombreDato){
-			var JsonElement jsonElement = new JsonParser().parse(elJsonRecibido)
-        	var JsonObject jsonObject = jsonElement.getAsJsonObject()
-        	var dato = jsonObject.get(nombreDato)
-        	return dato
+		var JsonElement jsonElement = new JsonParser().parse(elJsonRecibido)
+        var JsonObject jsonObject = jsonElement.getAsJsonObject()
+        var dato = jsonObject.get(nombreDato)
+        return dato
 	}	
 }

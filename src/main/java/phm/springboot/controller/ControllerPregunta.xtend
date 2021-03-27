@@ -31,24 +31,29 @@ class ControllerPregunta {
 	}	
 	
 	//Unificar endpoints 
-	@GetMapping("/busqueda/preguntasActivas")
-	def getPreguntasActivas() {
-		try {
-			val repoPreguntas = RepositorioPreguntas.instance
-			val preguntasActivas = repoPreguntas.getPreguntasActivas()
-			ResponseEntity.ok(preguntasActivas)				
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
-	}	
+//	@GetMapping("/busqueda/preguntasActivas")
+//	def getPreguntasActivas() {
+//		try {
+//			val preguntasActivas = RepositorioPreguntas.instance.getPreguntasActivas()
+//			ResponseEntity.ok(preguntasActivas)				
+//		} catch (Exception e) {
+//			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+//		}
+//	}	
 	
 	// Preguntas filtradas por la pregunta misma
 	@PostMapping("/busqueda/preguntas")
 	def preguntasFiltradas(@RequestBody String unaBusqueda) {
 		try {
 			var busqueda = Mapper.extraerStringDeJson(unaBusqueda, "unaBusqueda")
+			var soloActivas = Mapper.extraerBooleanDeJson(unaBusqueda, "soloActivas")
 			
 			var Pregunta[] preguntas = RepositorioPreguntas.instance.search(busqueda)
+			
+			if(soloActivas){
+				preguntas = preguntas.filter[pregunta | pregunta.estaActiva].toList()				
+			}
+			
 			ResponseEntity.ok(preguntas)				
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
