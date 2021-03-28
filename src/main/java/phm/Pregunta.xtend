@@ -5,8 +5,21 @@ import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty.Access
 
 @Accessors
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonSubTypes( 
+	@JsonSubTypes.Type(name = "preguntaSimple", value = PreguntaSimple), 
+	@JsonSubTypes.Type(name = "preguntaRiesgosa", value = PreguntaRiesgosa), 
+	@JsonSubTypes.Type(name = "preguntaSolidaria", value = PreguntaSolidaria)
+)
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 0
 	@Accessors var String pregunta
@@ -19,6 +32,17 @@ abstract class Pregunta extends Entidad{
 	def getIdAutor(){
 		autor.id
 	}
+	
+	@JsonIgnore
+	def String getRespuestaCorrecta(){
+	   return respuestaCorrecta
+	}	
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	def String setRespuestaCorrecta(String respuesta){
+	   respuestaCorrecta = respuesta
+	}	
+	
 	
 	@JsonProperty("nombreAutor")
 	def String getNombreAutor(){
@@ -56,10 +80,10 @@ abstract class Pregunta extends Entidad{
 }
 
 
-
+@JsonTypeName("preguntaSimple")
 class PreguntaSimple extends Pregunta{
+	final String type = "preguntaSimple"
 	static final float puntos = 10
-	
 	
 	//HACER TEMPLATE 
 	override responder(Usuario participante, String respuesta){
@@ -70,7 +94,9 @@ class PreguntaSimple extends Pregunta{
 }
 
 
+@JsonTypeName("preguntaRiesgosa")
 class PreguntaRiesgosa extends Pregunta{
+	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
 	static final float puntos = 100
 	static final float puntosEnRiesgo = 50
@@ -91,12 +117,13 @@ class PreguntaRiesgosa extends Pregunta{
 }
 
 
+@JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
-	final float puntos
+	final String type = "preguntaSolidria"
+	float puntos
 		
-	new(float puntos){
-		super()
-		this.puntos = puntos
+	def asignarPuntos(float losPuntos){
+		puntos = losPuntos
 	}
 	
 	override responder(Usuario participante, String respuesta){

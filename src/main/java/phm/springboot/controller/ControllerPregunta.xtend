@@ -14,6 +14,7 @@ import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.PutMapping
 import phm.PreguntaSimple
+import phm.PreguntaSolidaria
 
 @RestController
 @CrossOrigin
@@ -110,11 +111,33 @@ class ControllerPregunta {
 				return new ResponseEntity<String>("Error de identificación de pregunta", HttpStatus.BAD_REQUEST)
 			}
 			val repoPreguntas = RepositorioPreguntas.instance
-			val pregunta = Mapper.mapear.readValue(body, PreguntaSimple)
+			val pregunta = Mapper.mapear.readValue(body, Pregunta)
 			
 			pregunta.autor = repoPreguntas.getById(id).autor
 			repoPreguntas.update(pregunta)
 			ResponseEntity.ok(Mapper.mapear.writeValueAsString(pregunta))						
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
+	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable float puntos) {
+		try {
+			val repoPreguntas = RepositorioPreguntas.instance
+			val repoUsuarios = RepositorioUsuarios.instance
+			
+			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
+			nuevaPregunta.autor = repoUsuarios.getById(idAutor)
+			
+			if (nuevaPregunta instanceof PreguntaSolidaria){
+				nuevaPregunta.asignarPuntos(puntos)
+			}
+
+			repoPreguntas.create(nuevaPregunta)
+			
+			ResponseEntity.ok(Mapper.mapear.writeValueAsString(nuevaPregunta))
+
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
