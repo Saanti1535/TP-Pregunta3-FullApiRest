@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty.Access
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,12 +28,22 @@ abstract class Pregunta extends Entidad{
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@Accessors var Usuario autor
 	
-	@JsonIgnore()
 	@JsonProperty("idAutor")
 	def getIdAutor(){
 		autor.id
 	}
-	@JsonIgnore()
+	
+	@JsonIgnore
+	def String getRespuestaCorrecta(){
+	   return respuestaCorrecta
+	}	
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	def String setRespuestaCorrecta(String respuesta){
+	   respuestaCorrecta = respuesta
+	}	
+	
+	
 	@JsonProperty("nombreAutor")
 	def String getNombreAutor(){
 		autor.nombre + ' ' + autor.apellido
@@ -109,11 +120,10 @@ class PreguntaRiesgosa extends Pregunta{
 @JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
 	final String type = "preguntaSolidria"
-	final float puntos
+	float puntos
 		
-	new(float puntos){
-		super()
-		this.puntos = puntos
+	def asignarPuntos(float losPuntos){
+		puntos = losPuntos
 	}
 	
 	override responder(Usuario participante, String respuesta){
