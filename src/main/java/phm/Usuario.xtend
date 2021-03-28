@@ -43,5 +43,9 @@ class Usuario extends Entidad {
 			this.amigos.add(RepositorioUsuarios.instance.buscarPorNombreDeUsuario(amigo))
 		)
 	}
+	
+	def yaRespondio(String preguntaAResponder){
+		historial.exists[respuesta | respuesta.pregunta == preguntaAResponder]
+	}
 
 }

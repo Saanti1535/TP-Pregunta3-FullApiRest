@@ -61,17 +61,24 @@ class ControllerPregunta {
 		}
 	}
 	
-	@GetMapping("/busqueda/pregunta/{id}")
-	def preguntaPorId(@PathVariable int id) {
+	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
+	def preguntaPorId(@PathVariable int id, @PathVariable int idUsuario) {
 		try {
 			val repoPreguntas = RepositorioPreguntas.instance
+			val repoUsuarios = RepositorioUsuarios.instance
 			var Pregunta pregunta
 			try{
 				pregunta = repoPreguntas.getById(id)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
-			ResponseEntity.ok(pregunta)				
+			
+			var Usuario usuario = repoUsuarios.getById(idUsuario)
+			if(!usuario.yaRespondio(pregunta.pregunta)){
+				ResponseEntity.ok(pregunta)	
+			}else{
+				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la repsondió anteriormente", HttpStatus.UNAUTHORIZED)					
+			}		
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
@@ -134,9 +141,12 @@ class ControllerPregunta {
 				nuevaPregunta.asignarPuntos(puntos)
 			}
 
-			repoPreguntas.create(nuevaPregunta)
-			
-			ResponseEntity.ok(Mapper.mapear.writeValueAsString(nuevaPregunta))
+			if(!repoPreguntas.existePregunta(nuevaPregunta.pregunta)){
+				repoPreguntas.create(nuevaPregunta)			
+				ResponseEntity.ok(Mapper.mapear.writeValueAsString(nuevaPregunta))				
+			}else{
+				return new ResponseEntity<String>("La pregunta que quiere ingresar ya existe", HttpStatus.BAD_REQUEST)	
+			}
 
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)

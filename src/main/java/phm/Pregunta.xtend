@@ -26,6 +26,7 @@ abstract class Pregunta extends Entidad{
 	var String respuestaCorrecta
 	var List<String> opciones = newArrayList
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	@JsonIgnore
 	@Accessors var Usuario autor
 	
 	@JsonProperty("idAutor")
@@ -83,14 +84,19 @@ abstract class Pregunta extends Entidad{
 @JsonTypeName("preguntaSimple")
 class PreguntaSimple extends Pregunta{
 	final String type = "preguntaSimple"
-	static final float puntos = 10
+	@Accessors(PUBLIC_GETTER) static final float puntos = 10
 	
+	@JsonProperty("puntos")
+	def getPuntos(){
+		puntos
+	}	
 	//HACER TEMPLATE 
 	override responder(Usuario participante, String respuesta){
 		if(esRespuestaCorrecta(respuesta)){
 			agregarPuntos(participante, puntos)
 		} else modificarHistorial(participante, 0)
 	}
+	
 }
 
 
@@ -98,8 +104,13 @@ class PreguntaSimple extends Pregunta{
 class PreguntaRiesgosa extends Pregunta{
 	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
-	static final float puntos = 100
+	@Accessors(PUBLIC_GETTER) static final float puntos = 100
 	static final float puntosEnRiesgo = 50
+	
+	@JsonProperty("puntos")
+	def getPuntos(){
+		puntos
+	}	
 	
 	override responder(Usuario participante, String respuesta){
 		if(esRespuestaCorrecta(respuesta)){
@@ -120,7 +131,12 @@ class PreguntaRiesgosa extends Pregunta{
 @JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
 	final String type = "preguntaSolidria"
-	float puntos
+	@Accessors(PUBLIC_GETTER) float puntos
+	
+	@JsonProperty("puntos")
+	def getPuntos(){
+		puntos
+	}	
 		
 	def asignarPuntos(float losPuntos){
 		puntos = losPuntos

@@ -88,6 +88,10 @@ class RepositorioPreguntas extends Repositorio<Pregunta>{
 		return lista.filter[preguntaContieneString(busqueda)].toList()
 	}
 	
+	def existePregunta(String pregunta){
+		return lista.exists[unaPregunta | unaPregunta.pregunta == pregunta]
+	}
+	
 }
 
 
