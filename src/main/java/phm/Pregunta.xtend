@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty.Access
+import java.time.ZonedDateTime
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,7 +26,7 @@ abstract class Pregunta extends Entidad{
 	@Accessors var String pregunta
 	var String respuestaCorrecta
 	var List<String> opciones = newArrayList
-	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@JsonIgnore
 	@Accessors var Usuario autor
 	
@@ -51,8 +52,8 @@ abstract class Pregunta extends Entidad{
 	}
 	
 	def boolean estaActiva(){
-		var LocalDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
-		LocalDateTime.now().isBefore(vencimiento)
+		var ZonedDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
+		ZonedDateTime.now().isBefore(vencimiento)
 	}
 	
 	def boolean esRespuestaCorrecta(String respuesta){
@@ -68,7 +69,7 @@ abstract class Pregunta extends Entidad{
 	def void modificarHistorial(Usuario participante, float puntos){
 		var RegistroRespuestas registro = new RegistroRespuestas()
 		registro.pregunta = pregunta
-		registro.fechaRespuesta = LocalDate.now()
+		registro.fechaRespuesta = ZonedDateTime.now()
 		registro.puntosOtorgados = puntos
 		
 		participante.historial.add(registro)
@@ -122,8 +123,8 @@ class PreguntaRiesgosa extends Pregunta{
 	}
 	
 	def boolean esRespuestaRapida(){
-		var LocalDateTime tiempoLimite = fechaHoraDeCreacion.plusMinutes(minutosDeRiesgo)
-		LocalDateTime.now().isBefore(tiempoLimite)
+		var ZonedDateTime tiempoLimite = fechaHoraDeCreacion.plusMinutes(minutosDeRiesgo)
+		ZonedDateTime.now().isBefore(tiempoLimite)
 	}
 }
 

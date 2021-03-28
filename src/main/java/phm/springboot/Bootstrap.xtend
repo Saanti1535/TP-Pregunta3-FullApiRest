@@ -7,6 +7,8 @@ import phm.RepositorioPreguntas
 import java.time.LocalDate
 import phm.RegistroRespuestas
 import phm.RepositorioHistoriales
+import java.time.ZonedDateTime
+import java.time.ZoneId
 
 class Bootstrap {
 	var liliana = new Usuario => [
@@ -14,7 +16,7 @@ class Bootstrap {
 		password = "123456";
 		nombre="Liliana";
 		apellido="Perez";
-		fechaNacimiento = LocalDate.of(1990, 05, 09);
+		fechaNacimiento = ZonedDateTime.of(1998, 5, 29, 17, 4, 15, 0, ZoneId.of("GMT-3"));
 		puntaje=1000;
 	]
 	var pep = new Usuario => [
@@ -22,7 +24,7 @@ class Bootstrap {
 		password = "123456";
 		nombre="Pep";
 		apellido="Guardiola";
-		fechaNacimiento = LocalDate.of(1990, 05, 09);
+		fechaNacimiento = ZonedDateTime.of(1990, 5, 14, 17, 4, 15, 0, ZoneId.of("GMT-3"));
 		puntaje=350;
 	]
 	var jose = new Usuario => [
@@ -30,7 +32,7 @@ class Bootstrap {
 		password = "123456";
 		nombre="Jose";
 		apellido="Mourinho";
-		fechaNacimiento = LocalDate.of(1990, 05, 09);
+		fechaNacimiento = ZonedDateTime.of(1995, 7, 13, 17, 4, 15, 0, ZoneId.of("GMT-3"));
 		puntaje=400;
 	]
 	var juana = new Usuario => [
@@ -38,7 +40,7 @@ class Bootstrap {
 		password = "juana";
 		nombre="Juana";
 		apellido="Viale";
-		fechaNacimiento = LocalDate.of(1990, 05, 09);
+		fechaNacimiento = ZonedDateTime.of(1980, 5, 13, 17, 4, 15, 0, ZoneId.of("GMT-3"));
 		puntaje=50;
 	]
 	
@@ -51,11 +53,11 @@ class Bootstrap {
 	var pregunta07 = new PreguntaSimple => [ pregunta = "¿De qué colores es la bandera de México?"; id = 7; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 	var pregunta08 = new PreguntaSimple => [ pregunta = "¿Qué cantidad de huesos en el cuerpo humano?"; id = 8; opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];autor=juana; respuestaCorrecta="Opcion 2"]
 		
-	var registro01 = new RegistroRespuestas => [pregunta = "¿Cuál es el lugar más frío de la tierra?";  fechaRespuesta = LocalDate.of(1990, 05, 09); puntosOtorgados = 100]
-	var registro02 = new RegistroRespuestas => [pregunta = "¿Dónde originaron los juegos olímpicos?";  fechaRespuesta = LocalDate.of(2000, 01, 25); puntosOtorgados = 500]
-	var registro03 = new RegistroRespuestas => [pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";  fechaRespuesta = LocalDate.of(2041, 11, 30); puntosOtorgados = 10]
+	var registro01 = new RegistroRespuestas => [pregunta = "¿Cuál es el lugar más frío de la tierra?";  fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3")); puntosOtorgados = 100]
+	var registro02 = new RegistroRespuestas => [pregunta = "¿Dónde originaron los juegos olímpicos?";  fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3")); puntosOtorgados = 500]
+	var registro03 = new RegistroRespuestas => [pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";  fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3")); puntosOtorgados = 10]
 /**********************************************************/
-	def void run() {
+	def void run() { 
 		jose.amigos.add(pep)
 		jose.amigos.add(juana)
 		pep.amigos.add(juana)
