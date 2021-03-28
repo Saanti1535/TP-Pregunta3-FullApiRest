@@ -5,8 +5,20 @@ import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 @Accessors
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonSubTypes( 
+	@JsonSubTypes.Type(name = "preguntaSimple", value = PreguntaSimple), 
+	@JsonSubTypes.Type(name = "preguntaRiesgosa", value = PreguntaRiesgosa), 
+	@JsonSubTypes.Type(name = "preguntaSolidaria", value = PreguntaSolidaria)
+)
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 0
 	@Accessors var String pregunta
@@ -15,11 +27,12 @@ abstract class Pregunta extends Entidad{
 	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	@Accessors var Usuario autor
 	
+	@JsonIgnore()
 	@JsonProperty("idAutor")
 	def getIdAutor(){
 		autor.id
 	}
-	
+	@JsonIgnore()
 	@JsonProperty("nombreAutor")
 	def String getNombreAutor(){
 		autor.nombre + ' ' + autor.apellido
@@ -56,10 +69,10 @@ abstract class Pregunta extends Entidad{
 }
 
 
-
+@JsonTypeName("preguntaSimple")
 class PreguntaSimple extends Pregunta{
+	final String type = "preguntaSimple"
 	static final float puntos = 10
-	
 	
 	//HACER TEMPLATE 
 	override responder(Usuario participante, String respuesta){
@@ -70,7 +83,9 @@ class PreguntaSimple extends Pregunta{
 }
 
 
+@JsonTypeName("preguntaRiesgosa")
 class PreguntaRiesgosa extends Pregunta{
+	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
 	static final float puntos = 100
 	static final float puntosEnRiesgo = 50
@@ -91,7 +106,9 @@ class PreguntaRiesgosa extends Pregunta{
 }
 
 
+@JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
+	final String type = "preguntaSolidria"
 	final float puntos
 		
 	new(float puntos){

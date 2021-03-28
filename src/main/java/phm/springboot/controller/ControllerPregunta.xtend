@@ -110,7 +110,7 @@ class ControllerPregunta {
 				return new ResponseEntity<String>("Error de identificación de pregunta", HttpStatus.BAD_REQUEST)
 			}
 			val repoPreguntas = RepositorioPreguntas.instance
-			val pregunta = Mapper.mapear.readValue(body, PreguntaSimple)
+			val pregunta = Mapper.mapear.readValue(body, Pregunta)
 			
 			pregunta.autor = repoPreguntas.getById(id).autor
 			repoPreguntas.update(pregunta)
@@ -118,6 +118,20 @@ class ControllerPregunta {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
+	}
+	
+	@PutMapping("/crearPregunta")
+	def crearPregunta(@RequestBody String body) {
+//		try {
+			val repoPreguntas = RepositorioPreguntas.instance
+			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
+
+			repoPreguntas.create(nuevaPregunta)
+			ResponseEntity.ok(Mapper.mapear.writeValueAsString(nuevaPregunta))
+
+//		} catch (Exception e) {
+//			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+//		}
 	}
 	
 
