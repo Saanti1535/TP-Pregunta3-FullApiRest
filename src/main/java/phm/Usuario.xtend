@@ -5,15 +5,23 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Past
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
+
 class Usuario extends Entidad {
 	@Accessors String username
 	@JsonIgnore
 	@Accessors String password
+	@NotBlank
 	String nombre
+	@NotBlank
 	String apellido
-	LocalDate fechaNacimiento
+	@Past
+	ZonedDateTime fechaNacimiento
 	List<Usuario> amigos = newLinkedList
 	@Accessors float puntaje
 	@Accessors List<RegistroRespuestas> historial = newArrayList
@@ -28,13 +36,11 @@ class Usuario extends Entidad {
 
 	/* Metodos para mapeo con JSON */
 	@JsonProperty("fechaNacimiento")
-	def LocalDate obtenerFechaNacimiento(String fecha) {
-		var String[] parte = fecha.split("-");
-		var int anio = Integer.parseInt(parte.get(0))
-		var int mes = Integer.parseInt(parte.get(1))
-		var int dia = Integer.parseInt(parte.get(2))
-
-		this.fechaNacimiento = LocalDate.of(anio, mes, dia)
+	def void obtenerFechaNacimiento(String fecha) {
+		System.out.println("Por parsear: "+fecha)
+		this.fechaNacimiento = ZonedDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME) 
+		System.out.println("Quedo: "+this.fechaNacimiento)
+		
 	}
 	
 	@JsonProperty("amigos")

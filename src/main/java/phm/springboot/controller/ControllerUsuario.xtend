@@ -11,6 +11,7 @@ import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
+import javax.validation.Valid
 
 @CrossOrigin
 @RestController
@@ -84,12 +85,13 @@ class ControllerUsuario {
 	
 	@PutMapping("/perfil/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Integer id) {
-		try {			
+//		try {			
 			//Chequear si puede pasar que exista un ID null 
 			if(id === null){
 				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
 			}
 			val repoUsuarios = RepositorioUsuarios.instance
+			
 			val actualizado = Mapper.mapear.readValue(body, Usuario)
 			actualizado.username = repoUsuarios.getById(id).username
 			actualizado.password = repoUsuarios.getById(id).password
@@ -101,9 +103,9 @@ class ControllerUsuario {
 			}
 			
 			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+//		} catch (Exception e) {
+//			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+//		}
 	}
 	
 
