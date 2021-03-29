@@ -21,7 +21,7 @@ class Usuario extends Entidad {
 	String apellido
 	@Past
 	ZonedDateTime fechaNacimiento
-	List<Usuario> amigos = newLinkedList
+	List<String> amigos = newLinkedList
 	@Accessors float puntaje
 	@Accessors List<RegistroRespuestas> historial = newArrayList
 
@@ -37,13 +37,6 @@ class Usuario extends Entidad {
 	@JsonProperty("fechaNacimiento")
 	def void obtenerFechaNacimiento(String fecha) {
 		this.fechaNacimiento = ZonedDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-	}
-	
-	@JsonProperty("amigos")
-	def void obtenerListaDeAmigos(List<String> amigos) {
-		amigos.forEach(amigo |
-			this.amigos.add(RepositorioUsuarios.instance.buscarPorNombreDeUsuario(amigo))
-		)
 	}
 	
 	def yaRespondio(String preguntaAResponder){

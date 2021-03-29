@@ -22,7 +22,7 @@ class ControllerUsuario {
 		try {
 			val repoUsuarios = RepositorioUsuarios.instance
 			if(!repoUsuarios.existeUsuarioConNombreDeUsuario(nombreUsuario)){
-				return new ResponseEntity<String>("Usuario o contrase�a incorrecto/a", HttpStatus.UNAUTHORIZED)
+				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}
 			
 			var Usuario usuario = repoUsuarios.buscarPorNombreDeUsuario(nombreUsuario)
@@ -33,7 +33,7 @@ class ControllerUsuario {
 				ResponseEntity.ok(usuario)				
 			}else{
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
-			}
+			} 
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
@@ -50,7 +50,7 @@ class ControllerUsuario {
 			val usuarios = repoUsuarios.lista
 			.filter(usuario | 
 				usuario.id !== id
-				&& !usuarioLogueado.amigos.exists(amigo | amigo.id === usuario.id)
+				&& !usuarioLogueado.amigos.exists(amigo | amigo.equals(usuario.username) )
 				&& usuario.username.toLowerCase().contains(usuarioABuscar.toLowerCase())
 			)
 			.map(usuario | usuario.username)
@@ -58,7 +58,7 @@ class ControllerUsuario {
 						
 			ResponseEntity.ok(usuarios)
 		} catch(Exception e){
-			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
+			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 	
