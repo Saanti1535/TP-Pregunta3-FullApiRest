@@ -1,10 +1,8 @@
 package phm
 
 import java.util.List
-import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.LocalDate
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

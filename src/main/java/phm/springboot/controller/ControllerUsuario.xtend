@@ -11,7 +11,6 @@ import phm.RepositorioUsuarios
 import phm.Usuario
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
-import javax.validation.Valid
 import java.time.ZonedDateTime
 
 @CrossOrigin
