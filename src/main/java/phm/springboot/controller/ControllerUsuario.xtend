@@ -12,6 +12,7 @@ import phm.Usuario
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import javax.validation.Valid
+import java.time.ZonedDateTime
 
 @CrossOrigin
 @RestController
@@ -85,7 +86,7 @@ class ControllerUsuario {
 	
 	@PutMapping("/perfil/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Integer id) {
-//		try {			
+		try {			
 			//Chequear si puede pasar que exista un ID null 
 			if(id === null){
 				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
@@ -99,13 +100,25 @@ class ControllerUsuario {
 			if(id !== actualizado.id){
 				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
 			}else{
-				repoUsuarios.update(actualizado)
+				camposDeUsuarioValidos(actualizado) ?
+				repoUsuarios.update(actualizado) :
+				return new ResponseEntity<String>("Los datos del usuario no son validos", HttpStatus.BAD_REQUEST)
 			}
 			
 			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-//		}
+		} catch (Exception e) {
+			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+	
+	
+	def boolean camposDeUsuarioValidos(Usuario usuario) {
+		val ZonedDateTime hoy = ZonedDateTime.now()
+		
+		!(usuario.nombre.isBlank() ||
+		  usuario.apellido.isBlank() ||
+		  usuario.fechaNacimiento.isAfter(hoy)
+		)
 	}
 	
 

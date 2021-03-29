@@ -37,10 +37,7 @@ class Usuario extends Entidad {
 	/* Metodos para mapeo con JSON */
 	@JsonProperty("fechaNacimiento")
 	def void obtenerFechaNacimiento(String fecha) {
-		System.out.println("Por parsear: "+fecha)
-		this.fechaNacimiento = ZonedDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME) 
-		System.out.println("Quedo: "+this.fechaNacimiento)
-		
+		this.fechaNacimiento = ZonedDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 	}
 	
 	@JsonProperty("amigos")
