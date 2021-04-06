@@ -1,15 +1,15 @@
-package phm.springboot
+package phm
 
-import phm.RepositorioUsuarios
-import phm.Usuario
-import phm.PreguntaSimple
-import phm.RepositorioPreguntas
-import phm.RegistroRespuestas
-import phm.RepositorioHistoriales
 import java.time.ZonedDateTime
 import java.time.ZoneId
-import phm.PreguntaRiesgosa
-import phm.PreguntaSolidaria
+import phm.domain.Usuario
+import phm.domain.PreguntaSimple
+import phm.domain.PreguntaRiesgosa
+import phm.domain.PreguntaSolidaria
+import phm.domain.RegistroRespuestas
+import phm.domain.RepositorioPreguntas
+import phm.domain.RepositorioUsuarios
+import phm.domain.RepositorioHistoriales
 
 class Bootstrap {
 
