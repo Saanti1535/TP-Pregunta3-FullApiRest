@@ -1,0 +1,18 @@
+# Para correrlo con Workbench tuve que usar esta url
+# jdbc:mysql://localhost:3306/pregunta3?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+# el 3306 (es el puerto por defecto)
+# las anotaciones después del signo ? son por un error que tiraba en la configuración horaria
+spring:  
+    datasource:
+        url: jdbc:mysql://localhost/pregunta3
+        username: userPHM
+        password: 
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+        open-in-view: false
+        show-sql: true
+        hibernate:
+            format_sql: true
+            ddl-auto: update
+

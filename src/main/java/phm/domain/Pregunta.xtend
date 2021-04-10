@@ -1,4 +1,4 @@
-package phm
+package phm.domain
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -10,6 +10,18 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty.Access
 import java.time.ZonedDateTime
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.ElementCollection
+import javax.persistence.DiscriminatorColumn
+import javax.persistence.DiscriminatorType
+import javax.persistence.DiscriminatorValue
+import javax.persistence.Inheritance
+import javax.persistence.InheritanceType
+import javax.persistence.ManyToOne
+import javax.persistence.Column
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,13 +31,29 @@ import java.time.ZonedDateTime
 	@JsonSubTypes.Type(name = "preguntaRiesgosa", value = PreguntaRiesgosa), 
 	@JsonSubTypes.Type(name = "preguntaSolidaria", value = PreguntaSolidaria)
 )
+@Entity
+@Table(name="pregunta")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="tipo_pregunta",    
+                     discriminatorType=DiscriminatorType.INTEGER)
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 0
+	
+	@Column(length=255)
 	@Accessors var String pregunta
+	
+	@Column(length=255)
 	var String respuestaCorrecta
+	
+	@ElementCollection(targetClass=String)
 	var List<String> opciones = newArrayList
+	
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	
 	@JsonIgnore
+	@ManyToOne
 	@Accessors var Usuario autor
 	
 	@JsonProperty("idAutor")
@@ -79,7 +107,9 @@ abstract class Pregunta extends Entidad{
 	}
 }
 
-
+@Accessors
+@Entity
+@DiscriminatorValue("1")
 @JsonTypeName("preguntaSimple")
 class PreguntaSimple extends Pregunta{
 	final String type = "preguntaSimple"
@@ -98,7 +128,9 @@ class PreguntaSimple extends Pregunta{
 	
 }
 
-
+@Accessors
+@Entity
+@DiscriminatorValue("2")
 @JsonTypeName("preguntaRiesgosa")
 class PreguntaRiesgosa extends Pregunta{
 	final String type = "preguntaRiesgosa"
@@ -126,7 +158,9 @@ class PreguntaRiesgosa extends Pregunta{
 	}
 }
 
-
+@Accessors
+@Entity
+@DiscriminatorValue("3")
 @JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
 	final String type = "preguntaSolidria"

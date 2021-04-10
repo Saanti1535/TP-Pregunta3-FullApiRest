@@ -1,20 +1,19 @@
-package phm.springboot.controller
+package phm.controller
 
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
-import phm.RepositorioPreguntas
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import phm.Pregunta
 import org.springframework.web.bind.annotation.PathVariable
-import phm.RepositorioUsuarios
-import phm.Usuario
 import org.springframework.web.bind.annotation.PutMapping
-import phm.PreguntaSimple
-import phm.PreguntaSolidaria
+import phm.domain.RepositorioPreguntas
+import phm.domain.Pregunta
+import phm.domain.RepositorioUsuarios
+import phm.domain.PreguntaSolidaria
+import phm.domain.Usuario
 
 @RestController
 @CrossOrigin
