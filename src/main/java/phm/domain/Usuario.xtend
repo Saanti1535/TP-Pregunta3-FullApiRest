@@ -12,23 +12,39 @@ import javax.persistence.Entity
 import javax.persistence.OneToMany
 import javax.persistence.ElementCollection
 import javax.persistence.Table
+import javax.persistence.Column
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 
 @Entity
 @Table(name="usuario")
 class Usuario extends Entidad {
+	@Column
 	@Accessors String username
+	
+	@Column
 	@JsonIgnore
 	@Accessors String password
+	
+	@Column
 	@NotBlank
 	String nombre
+	
+	@Column
 	@NotBlank
 	String apellido
+	
+	@Column
 	@Past
+	@Temporal(TemporalType.TIMESTAMP)
 	ZonedDateTime fechaNacimiento
+	
 	@ElementCollection(targetClass=String)
 	List<String> amigos = newLinkedList
+	
+	@Column
 	@Accessors float puntaje
 	
 	@Accessors

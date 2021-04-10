@@ -19,6 +19,9 @@ import javax.persistence.DiscriminatorValue
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.ManyToOne
+import javax.persistence.Column
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -35,11 +38,20 @@ import javax.persistence.ManyToOne
                      discriminatorType=DiscriminatorType.INTEGER)
 abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 0
+	
+	@Column(length=255)
 	@Accessors var String pregunta
+	
+	@Column(length=255)
 	var String respuestaCorrecta
+	
 	@ElementCollection(targetClass=String)
 	var List<String> opciones = newArrayList
+	
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	
 	@JsonIgnore
 	@ManyToOne
 	@Accessors var Usuario autor
