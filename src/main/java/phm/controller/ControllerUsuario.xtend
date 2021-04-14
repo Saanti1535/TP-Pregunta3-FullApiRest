@@ -25,13 +25,13 @@ class ControllerUsuario {
 	@PostMapping("/login/{nombreUsuario}")
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
 		try {
-			var Usuario usuario = repoUsuarios.findByUsernameEquals(nombreUsuario)
+			var Usuario usuario = repoUsuarios.findByUsername(nombreUsuario)
 			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
 
 			if(usuario === null || usuario.password != claveRecibida){
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}else{
-				ResponseEntity.ok(usuario)				
+				ResponseEntity.ok(usuario)
 			} 
 			
 		} catch (Exception e) {

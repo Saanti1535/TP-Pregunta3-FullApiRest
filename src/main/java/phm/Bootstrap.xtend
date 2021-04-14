@@ -180,7 +180,7 @@ class Bootstrap implements InitializingBean{
 	/************************** CARGA DE DATOS *****************************/
 	def initUsuarios(){
 //		cargarHistorial()
-//		cargarAmigos() 
+		cargarAmigos() 
 		crearUsuario(liliana)
 		crearUsuario(pep)
 		crearUsuario(jose)
@@ -212,7 +212,7 @@ class Bootstrap implements InitializingBean{
 //	}
 
 	def void crearUsuario(Usuario usuario) {
-		val usuarioEnRepo = repoUsuarios.findByUsernameEquals(usuario.username)
+		val usuarioEnRepo = repoUsuarios.findByUsername(usuario.username)
 		if(usuarioEnRepo !== null){
 			usuario.id = usuarioEnRepo.id
 		}

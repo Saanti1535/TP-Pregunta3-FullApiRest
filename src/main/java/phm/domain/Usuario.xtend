@@ -13,8 +13,10 @@ import javax.persistence.OneToMany
 import javax.persistence.ElementCollection
 import javax.persistence.Table
 import javax.persistence.Column
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
+import javax.persistence.OrderColumn
+import javax.persistence.FetchType
+import javax.persistence.CollectionTable
+import javax.persistence.JoinColumn
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 
@@ -42,13 +44,15 @@ class Usuario extends Entidad {
 	ZonedDateTime fechaNacimiento
 	
 	@ElementCollection(targetClass=String)
+	@OrderColumn
+	@CollectionTable(name="usuario_amigos", joinColumns=@JoinColumn(name="usuario_id"))
 	List<String> amigos = newLinkedList
 	
 	@Column
 	@Accessors float puntaje
 	
 	@Accessors
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	List<RegistroRespuestas> historial = newArrayList
 
 	def void agregarPuntos(float puntos) {
