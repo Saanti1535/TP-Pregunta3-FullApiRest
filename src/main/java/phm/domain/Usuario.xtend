@@ -45,7 +45,6 @@ class Usuario extends Entidad {
 	
 	@ElementCollection(targetClass=String)
 	@OrderColumn
-	@CollectionTable(name="usuario_amigos", joinColumns=@JoinColumn(name="usuario_id"))
 	List<String> amigos = newLinkedList
 	
 	@Column
