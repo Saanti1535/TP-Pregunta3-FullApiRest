@@ -38,7 +38,7 @@ class Usuario extends Entidad {
 	
 	@Column
 	@Past
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	ZonedDateTime fechaNacimiento
 	
 	@ElementCollection(targetClass=String)

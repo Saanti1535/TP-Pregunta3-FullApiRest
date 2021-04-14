@@ -49,7 +49,7 @@ abstract class Pregunta extends Entidad{
 	var List<String> opciones = newArrayList
 	
 	@Column
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	
 	@JsonIgnore

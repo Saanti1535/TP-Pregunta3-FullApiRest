@@ -7,12 +7,21 @@ import phm.domain.PreguntaSimple
 import phm.domain.PreguntaRiesgosa
 import phm.domain.PreguntaSolidaria
 import phm.domain.RegistroRespuestas
-import phm.domain.RepositorioPreguntas
-import phm.domain.RepositorioUsuarios
-import phm.domain.RepositorioHistoriales
+import phm.repository.UsuarioRepository
+import org.springframework.stereotype.Service
+import org.springframework.beans.factory.annotation.Autowired
+import phm.repository.PreguntaRepository
+import phm.domain.Pregunta
+import org.springframework.beans.factory.InitializingBean
 
-class Bootstrap {
-
+@Service
+class Bootstrap implements InitializingBean{
+	
+	@Autowired
+	UsuarioRepository repoUsuarios
+	@Autowired
+	PreguntaRepository repoPreguntas
+	
 	var liliana = new Usuario => [
 		username = 'liliana';
 		password = "123456";
@@ -166,54 +175,65 @@ class Bootstrap {
 		puntosOtorgados = 10
 	]
 
-	/*************************** RUN *******************************/
-	
-	def void run() {
-		cargarAmigos
-		cargarHistorial
-		asignarPuntos
-		crearUsuarios
-		crearHistoriales
-		crearPreguntas
-	}
 
 	/************************** CARGA DE DATOS *****************************/
+	/************************** CARGA DE DATOS *****************************/
+	def initUsuarios(){
+//		cargarHistorial()
+//		cargarAmigos() 
+		crearUsuario(liliana)
+		crearUsuario(pep)
+		crearUsuario(jose)
+		crearUsuario(juana)
+	}
 	
-	def void crearUsuarios() {
-		RepositorioUsuarios.instance => [
-			create(liliana)
-			create(pep)
-			create(jose)
-			create(juana)
-		]
+	def initPreguntas(){
+		asignarPuntos()
+		crearPregunta(pregunta01)
+		crearPregunta(pregunta02)
+		crearPregunta(pregunta03)
+		crearPregunta(pregunta04)
+		crearPregunta(pregunta05)
+		crearPregunta(pregunta06)
+		crearPregunta(pregunta07)
+		crearPregunta(pregunta08)
+	}
+	
+//	def initRegistros(){
+//		crearRegistro(registroPep01)
+//		crearRegistro(registroPep02)
+//		crearRegistro(registroPep03)
+//		crearRegistro(registroJuana01)
+//		crearRegistro(registroJuana02)
+//		crearRegistro(registroJuana03)
+//		crearRegistro(registroJose01)
+//		crearRegistro(registroJose02)
+//		crearRegistro(registroJose03)
+//	}
+
+	def void crearUsuario(Usuario usuario) {
+		val usuarioEnRepo = repoUsuarios.findByUsernameEquals(usuario.username)
+		if(usuarioEnRepo !== null){
+			usuario.id = usuarioEnRepo.id
+		}
+		repoUsuarios.save(usuario)
 	}
 
-	def void crearPreguntas() {
-		RepositorioPreguntas.instance => [
-			create(pregunta01)
-			create(pregunta02)
-			create(pregunta03)
-			create(pregunta04)
-			create(pregunta05)
-			create(pregunta06)
-			create(pregunta07)
-			create(pregunta08)
-		]
+	def void crearPregunta(Pregunta pregunta) {
+		val preguntaEnRepo = repoPreguntas.findByPregunta(pregunta.pregunta)
+		if(preguntaEnRepo !== null){
+			pregunta.id = preguntaEnRepo.id
+		}
+		repoPreguntas.save(pregunta)
 	}
-
-	def void crearHistoriales() {
-		RepositorioHistoriales.instance => [
-			create(registroPep01)
-			create(registroPep02)
-			create(registroPep03)
-			create(registroJuana01)
-			create(registroJuana02)
-			create(registroJuana03)
-			create(registroJose01)
-			create(registroJose02)
-			create(registroJose03)
-		]
-	}
+	
+//	def void crearRegistro(RegistroRespuestas registro){
+//		val registroEnRepo = repoPreguntas.findByPregunta(registro.pregunta)
+//		if(registroEnRepo !== null){
+//			registro.id = registroEnRepo.id
+//		}
+//		repoPreguntas.save(registro)
+//	}
 
 	def void cargarAmigos() {
 		jose.amigos.add(pep.username)
@@ -236,5 +256,14 @@ class Bootstrap {
 	def void asignarPuntos() {
 		pregunta07.asignarPuntos(30)
 		pregunta08.asignarPuntos(15)
+	}
+	
+	
+	/*************************** RUN *******************************/
+	/*************************** RUN *******************************/
+	/*************************** RUN *******************************/
+	override afterPropertiesSet() throws Exception {
+		initUsuarios()
+		initPreguntas()
 	}
 }

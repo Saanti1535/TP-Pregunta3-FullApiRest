@@ -14,10 +14,15 @@ import phm.domain.Pregunta
 import phm.domain.RepositorioUsuarios
 import phm.domain.PreguntaSolidaria
 import phm.domain.Usuario
+import phm.repository.PreguntaRepository
+import org.springframework.beans.factory.annotation.Autowired
 
 @RestController
 @CrossOrigin
 class ControllerPregunta {
+	
+	@Autowired
+	PreguntaRepository repoPregunta
 	
 	@GetMapping("/busqueda/preguntas")
 	def getTodasLasPreguntas() {

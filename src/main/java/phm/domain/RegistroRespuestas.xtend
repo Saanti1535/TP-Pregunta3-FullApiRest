@@ -19,7 +19,7 @@ class RegistroRespuestas extends Entidad {
 	String pregunta
 	
 	@Column
-	@Temporal(TemporalType.TIMESTAMP) 
+//	@Temporal(TemporalType.TIMESTAMP) 
 	ZonedDateTime fechaRespuesta
 	
 	@Column

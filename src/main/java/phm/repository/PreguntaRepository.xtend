@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PreguntaRepository extends CrudRepository<Pregunta, Long> {
 	
+	def Pregunta findByPregunta(String pregunta)
 }

@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.PutMapping
 import java.time.ZonedDateTime
 import phm.domain.RepositorioUsuarios
 import phm.domain.Usuario
+import org.springframework.beans.factory.annotation.Autowired
+import phm.repository.UsuarioRepository
 
 @CrossOrigin
 @RestController
 class ControllerUsuario {
 	
+	@Autowired
+	UsuarioRepository repoUsuarios
+	
 	@PostMapping("/login/{nombreUsuario}")
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
 		try {
-			val repoUsuarios = RepositorioUsuarios.instance
-			if(!repoUsuarios.existeUsuarioConNombreDeUsuario(nombreUsuario)){
-				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
-			}
-			
-			var Usuario usuario = repoUsuarios.buscarPorNombreDeUsuario(nombreUsuario)
-			
+			var Usuario usuario = repoUsuarios.findByUsernameEquals(nombreUsuario)
 			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
 
-			if(usuario.password == claveRecibida){
-				ResponseEntity.ok(usuario)				
-			}else{
+			if(usuario === null || usuario.password != claveRecibida){
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
+			}else{
+				ResponseEntity.ok(usuario)				
 			} 
+			
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
