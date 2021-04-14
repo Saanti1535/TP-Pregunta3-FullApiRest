@@ -27,8 +27,7 @@ class ControllerPregunta {
 	@GetMapping("/busqueda/preguntas")
 	def getTodasLasPreguntas() {
 		try {
-			val repoPreguntas = RepositorioPreguntas.instance
-			val todasLasPreguntas = repoPreguntas.getTodasLasPreguntas()
+			val todasLasPreguntas = repoPregunta.findAll()
 			ResponseEntity.ok(todasLasPreguntas)				
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)

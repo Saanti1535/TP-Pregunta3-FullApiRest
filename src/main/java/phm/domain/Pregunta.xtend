@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Column
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
+import javax.persistence.FetchType
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -45,7 +46,7 @@ abstract class Pregunta extends Entidad{
 	@Column(length=255)
 	var String respuestaCorrecta
 	
-	@ElementCollection(targetClass=String)
+	@ElementCollection(targetClass=String, fetch=FetchType.EAGER)
 	var List<String> opciones = newArrayList
 	
 	@Column

@@ -119,7 +119,7 @@ class Bootstrap implements InitializingBean{
 		id = 8;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = juana;
-		respuestaCorrecta = "Opcion 2;"
+		respuestaCorrecta = "Opcion 2"
 	]
 
 	var registroPep01 = new RegistroRespuestas => [
