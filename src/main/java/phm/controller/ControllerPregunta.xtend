@@ -16,6 +16,9 @@ import phm.domain.PreguntaSolidaria
 import phm.domain.Usuario
 import phm.repository.PreguntaRepository
 import org.springframework.beans.factory.annotation.Autowired
+import phm.domain.PreguntaDTO
+import phm.repository.UsuarioRepository
+import java.util.Arrays
 
 @RestController
 @CrossOrigin
@@ -24,10 +27,13 @@ class ControllerPregunta {
 	@Autowired
 	PreguntaRepository repoPregunta
 	
+	@Autowired
+	UsuarioRepository repoUsuario
+	
 	@GetMapping("/busqueda/preguntas")
 	def getTodasLasPreguntas() {
 		try {
-			val todasLasPreguntas = repoPregunta.findAll()
+			val todasLasPreguntas = repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 			ResponseEntity.ok(todasLasPreguntas)				
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -52,36 +58,40 @@ class ControllerPregunta {
 			var busqueda = Mapper.extraerStringDeJson(unaBusqueda, "unaBusqueda")
 			var soloActivas = Mapper.extraerBooleanDeJson(unaBusqueda, "soloActivas")
 			
-			var Pregunta[] preguntas = RepositorioPreguntas.instance.search(busqueda)
+			var Pregunta[] preguntas = repoPregunta.findByPreguntaContaining(busqueda)
 			
 			if(soloActivas){
 				preguntas = preguntas.filter[pregunta | pregunta.estaActiva].toList()				
 			}
 			
-			ResponseEntity.ok(preguntas)				
+			var PreguntaDTO[] preguntasDTO = preguntas.map [ PreguntaDTO.fromPregunta(it) ]
+			
+			ResponseEntity.ok(preguntasDTO)				
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 	
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
-	def preguntaPorId(@PathVariable int id, @PathVariable int idUsuario) {
+	def preguntaPorId(@PathVariable long id, @PathVariable long idUsuario) {
 		try {
-			val repoPreguntas = RepositorioPreguntas.instance
-			val repoUsuarios = RepositorioUsuarios.instance
 			var Pregunta pregunta
 			try{
-				pregunta = repoPreguntas.getById(id)
+				pregunta = repoPregunta.findById(id).orElse(null)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
-			var Usuario usuario = repoUsuarios.getById(idUsuario)
+			var Usuario usuario = repoUsuario.findById(idUsuario).orElse(null)
+			
+			pregunta.opciones = Arrays.asList(pregunta.opciones)
+			pregunta.autor = repoUsuario.findById(pregunta.autor.id).orElse(null)
+			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				ResponseEntity.ok(pregunta)	
 			}else{
 				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la repsondió anteriormente", HttpStatus.UNAUTHORIZED)					
-			}		
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}

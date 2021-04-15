@@ -23,6 +23,7 @@ import javax.persistence.Column
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.FetchType
+import javax.persistence.OrderColumn
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -46,7 +47,8 @@ abstract class Pregunta extends Entidad{
 	@Column(length=255)
 	var String respuestaCorrecta
 	
-	@ElementCollection(targetClass=String, fetch=FetchType.EAGER)
+	@ElementCollection(targetClass=String)
+	@OrderColumn
 	var List<String> opciones = newArrayList
 	
 	@Column
