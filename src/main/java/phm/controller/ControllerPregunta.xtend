@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import phm.domain.PreguntaDTO
 import phm.repository.UsuarioRepository
 import java.util.Arrays
+import org.springframework.web.server.ResponseStatusException
+import phm.domain.UpdatePregunta
 
 @RestController
 @CrossOrigin
@@ -39,17 +41,6 @@ class ControllerPregunta {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}	
-	
-	//Unificar endpoints 
-//	@GetMapping("/busqueda/preguntasActivas")
-//	def getPreguntasActivas() {
-//		try {
-//			val preguntasActivas = RepositorioPreguntas.instance.getPreguntasActivas()
-//			ResponseEntity.ok(preguntasActivas)				
-//		} catch (Exception e) {
-//			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-//		}
-//	}	
 	
 	// Preguntas filtradas por la pregunta misma
 	@PostMapping("/busqueda/preguntas")
@@ -125,17 +116,21 @@ class ControllerPregunta {
 	
 	
 	@PutMapping("/busqueda/pregunta/{id}")
-	def updatePreguntaPorId(@RequestBody String body, @PathVariable Integer id) {
+	def updatePreguntaPorId(@RequestBody String body, @PathVariable Long id) {
 		try {			
-			if(id === null){
-				return new ResponseEntity<String>("Error de identificación de pregunta", HttpStatus.BAD_REQUEST)
-			}
-			val repoPreguntas = RepositorioPreguntas.instance
-			val pregunta = Mapper.mapear.readValue(body, Pregunta)
-			
-			pregunta.autor = repoPreguntas.getById(id).autor
-			repoPreguntas.update(pregunta)
-			ResponseEntity.ok(Mapper.mapear.writeValueAsString(pregunta))						
+//			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
+			val updatePregunta = Mapper.mapear.readValue(body, Pregunta)
+			repoPregunta.findById(id).map[pregunta | 
+				pregunta => [ 
+					opciones = updatePregunta.opciones
+				]
+				repoPregunta.save(pregunta)
+			].orElseThrow([
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + id + " no existe") // No se usa ResponseEntity porque no funciona con throw 
+			])
+//			ResponseEntity.ok(Mapper.mapear.writeValueAsString(updatePregunta))	
+//			ResponseEntity.ok("Operación exitosa")	
+//			return new ResponseEntity<String>("Operación exitosa", HttpStatus.OK)	
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}

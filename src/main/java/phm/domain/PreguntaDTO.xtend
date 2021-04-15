@@ -1,6 +1,7 @@
 package phm.domain
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.List
 
 @Accessors
 class PreguntaDTO {
@@ -17,5 +18,17 @@ class PreguntaDTO {
       idAutor = pregunta.getIdAutor()
     ]
   }
-  
+}
+
+@Accessors
+class UpdatePregunta {
+	var List<String> opciones = newArrayList
+	
+	private new(List<String> unasOpciones) {
+		opciones = unasOpciones
+	}
+	
+	def static fromPregunta(Pregunta pregunta) {
+	    new UpdatePregunta(pregunta.opciones)
+  }
 }
