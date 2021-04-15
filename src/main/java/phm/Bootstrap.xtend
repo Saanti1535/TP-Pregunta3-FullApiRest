@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.PreguntaRepository
 import phm.domain.Pregunta
 import org.springframework.beans.factory.InitializingBean
+import phm.repository.RegistroRespuestasRepository
 
 @Service
 class Bootstrap implements InitializingBean{
@@ -21,6 +22,8 @@ class Bootstrap implements InitializingBean{
 	UsuarioRepository repoUsuarios
 	@Autowired
 	PreguntaRepository repoPreguntas
+	@Autowired
+	RegistroRespuestasRepository repoRegistroRespuestas
 	
 	var liliana = new Usuario => [
 		username = 'liliana';
@@ -60,7 +63,6 @@ class Bootstrap implements InitializingBean{
 
 	var pregunta01 = new PreguntaSimple => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
-		id = 1;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = liliana;
 		respuestaCorrecta = "Opcion 2"
@@ -68,7 +70,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta02 = new PreguntaSimple => [
 		pregunta = "¿Cuál es el río más largo del mundo?";
-		id = 2;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = liliana;
 		respuestaCorrecta = "Opcion 2"
@@ -76,7 +77,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta03 = new PreguntaSimple => [
 		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
-		id = 3;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = jose;
 		respuestaCorrecta = "Opcion 2"
@@ -84,7 +84,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta04 = new PreguntaRiesgosa => [
 		pregunta = "¿En qué continente está Ecuador?";
-		id = 4;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = pep;
 		respuestaCorrecta = "Opcion 2"
@@ -92,7 +91,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta05 = new PreguntaRiesgosa => [
 		pregunta = "¿Dónde originaron los juegos olímpicos?";
-		id = 5;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = pep;
 		respuestaCorrecta = "Opcion 2"
@@ -100,7 +98,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta06 = new PreguntaRiesgosa => [
 		pregunta = "¿Qué tipo de animal es la ballena?";
-		id = 6;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = jose;
 		respuestaCorrecta = "Opcion 2"
@@ -108,7 +105,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta07 = new PreguntaSolidaria => [
 		pregunta = "¿De qué colores es la bandera de México?";
-		id = 7;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = juana;
 		respuestaCorrecta = "Opcion 2"
@@ -116,7 +112,6 @@ class Bootstrap implements InitializingBean{
 	
 	var pregunta08 = new PreguntaSolidaria => [
 		pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";
-		id = 8;
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = juana;
 		respuestaCorrecta = "Opcion 2"
@@ -179,7 +174,7 @@ class Bootstrap implements InitializingBean{
 	/************************** CARGA DE DATOS *****************************/
 	/************************** CARGA DE DATOS *****************************/
 	def initUsuarios(){
-//		cargarHistorial()
+		cargarHistorial()
 		cargarAmigos() 
 		crearUsuario(liliana)
 		crearUsuario(pep)
@@ -187,7 +182,7 @@ class Bootstrap implements InitializingBean{
 		crearUsuario(juana)
 	}
 	
-	def initPreguntas(){
+	def initPreguntas(){ 
 		asignarPuntos()
 		crearPregunta(pregunta01)
 		crearPregunta(pregunta02)
@@ -199,41 +194,29 @@ class Bootstrap implements InitializingBean{
 		crearPregunta(pregunta08)
 	}
 	
-//	def initRegistros(){
-//		crearRegistro(registroPep01)
-//		crearRegistro(registroPep02)
-//		crearRegistro(registroPep03)
-//		crearRegistro(registroJuana01)
-//		crearRegistro(registroJuana02)
-//		crearRegistro(registroJuana03)
-//		crearRegistro(registroJose01)
-//		crearRegistro(registroJose02)
-//		crearRegistro(registroJose03)
-//	}
+	def initRegistros(){
+		crearRegistro(registroPep01)
+		crearRegistro(registroPep02)
+		crearRegistro(registroPep03)
+		crearRegistro(registroJuana01)
+		crearRegistro(registroJuana02)
+		crearRegistro(registroJuana03)
+		crearRegistro(registroJose01)
+		crearRegistro(registroJose02)
+		crearRegistro(registroJose03)
+	}
 
 	def void crearUsuario(Usuario usuario) {
-		val usuarioEnRepo = repoUsuarios.findByUsername(usuario.username)
-		if(usuarioEnRepo !== null){
-			usuario.id = usuarioEnRepo.id
-		}
 		repoUsuarios.save(usuario)
 	}
 
 	def void crearPregunta(Pregunta pregunta) {
-		val preguntaEnRepo = repoPreguntas.findByPregunta(pregunta.pregunta)
-		if(preguntaEnRepo !== null){
-			pregunta.id = preguntaEnRepo.id
-		}
 		repoPreguntas.save(pregunta)
 	}
 	
-//	def void crearRegistro(RegistroRespuestas registro){
-//		val registroEnRepo = repoPreguntas.findByPregunta(registro.pregunta)
-//		if(registroEnRepo !== null){
-//			registro.id = registroEnRepo.id
-//		}
-//		repoPreguntas.save(registro)
-//	}
+	def void crearRegistro(RegistroRespuestas registro){
+		repoRegistroRespuestas.save(registro)
+	}
 
 	def void cargarAmigos() {
 		jose.amigos.add(pep.username)
@@ -255,7 +238,7 @@ class Bootstrap implements InitializingBean{
 
 	def void asignarPuntos() {
 		pregunta07.asignarPuntos(30)
-		pregunta08.asignarPuntos(15)
+		pregunta08.asignarPuntos(15) 
 	}
 	
 	
@@ -263,7 +246,14 @@ class Bootstrap implements InitializingBean{
 	/*************************** RUN *******************************/
 	/*************************** RUN *******************************/
 	override afterPropertiesSet() throws Exception {
-		initUsuarios()
-		initPreguntas()
+		if(datosNoCargados){
+			initRegistros()	
+			initUsuarios()
+			initPreguntas()
+		}	
+	}
+	
+	def boolean datosNoCargados(){
+		repoUsuarios.findAll.isEmpty && repoUsuarios.findAll.isEmpty && repoUsuarios.findAll.isEmpty
 	}
 }

@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import java.time.ZonedDateTime
-import phm.domain.RepositorioUsuarios
 import phm.domain.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.UsuarioRepository
+import javax.transaction.Transactional
+import java.util.Arrays
 
 @CrossOrigin
 @RestController
+@Transactional
 class ControllerUsuario {
 	
 	@Autowired
@@ -24,30 +26,29 @@ class ControllerUsuario {
 	
 	@PostMapping("/login/{nombreUsuario}")
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
-		try {
+		 
 			var Usuario usuario = repoUsuarios.findByUsername(nombreUsuario)
 			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
 
 			if(usuario === null || usuario.password != claveRecibida){
+				System.out.println("claveRecibida"+claveRecibida+" usuario.pass"+usuario.password)
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}else{
 				ResponseEntity.ok(usuario)
 			} 
 			
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+		
 	}
 	
 	@PostMapping("/usuarios/{id}")
-	def getUsuarios(@PathVariable Integer id, @RequestBody String busqueda){
+	def getUsuarios(@PathVariable Long id, @RequestBody String busqueda){
 		try {
 			
 			val String usuarioABuscar = Mapper.extraerStringDeJson(busqueda,"busqueda")
 			
-			val repoUsuarios = RepositorioUsuarios.instance
-			val usuarioLogueado = repoUsuarios.getById(id)
-			val usuarios = repoUsuarios.lista
+			
+			val usuarioLogueado = repoUsuarios.findById(id).orElse(null)
+			val usuarios = repoUsuarios.findAll()
 			.filter(usuario | 
 				usuario.id !== id
 				&& !usuarioLogueado.amigos.exists(amigo | amigo.equals(usuario.username) )
@@ -64,50 +65,46 @@ class ControllerUsuario {
 	
 	// Cambiar nombre de rutas
 	@GetMapping("/perfil/{id}")
-	def getUsuarioPorId(@PathVariable Integer id) {
-		try {
-			val repoUsuarios = RepositorioUsuarios.instance
+	def getUsuarioPorId(@PathVariable Long id) {
+		
 			var Usuario usuario 
-			try{
-				usuario = repoUsuarios.getById(id)
-			}catch (Exception e){
-				//Chequear bien qué excepciones son catcheables acá (a ver cuál es la más adecuada)
-				return new ResponseEntity<String>("Id de usuario inexistente", HttpStatus.NOT_FOUND)			
-			}
+			
+				usuario = repoUsuarios.findById(id).orElse(null)
+				System.out.println("nombre "+usuario.nombre)
+				usuario.amigos = Arrays.asList(usuario.amigos)
+				usuario.historial = Arrays.asList(usuario.historial)
+			
 			if(usuario.id === id){
 				ResponseEntity.ok(usuario)				
 			}
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+		
 	}
 	
 	
 	@PutMapping("/perfil/{id}")
-	def updateUsuarioPorId(@RequestBody String body, @PathVariable Integer id) {
-		try {			
+	def updateUsuarioPorId(@RequestBody String body, @PathVariable Long id) {
+					
 			//Chequear si puede pasar que exista un ID null 
 			if(id === null){
 				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
 			}
-			val repoUsuarios = RepositorioUsuarios.instance
+			
 			
 			val actualizado = Mapper.mapear.readValue(body, Usuario)
-			actualizado.username = repoUsuarios.getById(id).username
-			actualizado.password = repoUsuarios.getById(id).password
+			val usuarioOriginal = repoUsuarios.findById(id).orElse(null)
+			actualizado.username = usuarioOriginal.username
+			actualizado.password = usuarioOriginal.password
 			
 			if(id !== actualizado.id){
 				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
 			}else{
 				camposDeUsuarioValidos(actualizado) ?
-				repoUsuarios.update(actualizado) :
+				repoUsuarios.save(actualizado) :
 				return new ResponseEntity<String>("Los datos del usuario no son validos", HttpStatus.BAD_REQUEST)
 			}
 			
 			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+		
 	}
 	
 	

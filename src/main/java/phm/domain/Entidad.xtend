@@ -6,11 +6,12 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 import javax.persistence.Column
+import javax.persistence.GenerationType
 
 @MappedSuperclass
-abstract class Entidad {
+abstract class Entidad { 
 	@Id	
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Accessors long id
 	
 	@JsonIgnore
