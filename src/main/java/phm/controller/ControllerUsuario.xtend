@@ -31,7 +31,6 @@ class ControllerUsuario {
 			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
 
 			if(usuario === null || usuario.password != claveRecibida){
-				System.out.println("claveRecibida"+claveRecibida+" usuario.pass"+usuario.password)
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}else{
 				ResponseEntity.ok(usuario)
@@ -70,7 +69,6 @@ class ControllerUsuario {
 			var Usuario usuario 
 			
 				usuario = repoUsuarios.findById(id).orElse(null)
-				System.out.println("nombre "+usuario.nombre)
 				usuario.amigos = Arrays.asList(usuario.amigos)
 				usuario.historial = Arrays.asList(usuario.historial)
 			
