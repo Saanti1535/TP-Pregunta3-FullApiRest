@@ -50,7 +50,7 @@ class Usuario extends Entidad {
 	@Accessors float puntaje
 	
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
+	@OneToMany(fetch=FetchType.LAZY) 
 	List<RegistroRespuestas> historial = newArrayList
 
 	def void agregarPuntos(float puntos) {
