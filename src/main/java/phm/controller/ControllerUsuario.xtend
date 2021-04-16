@@ -13,7 +13,6 @@ import java.time.ZonedDateTime
 import phm.domain.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.UsuarioRepository
-import javax.transaction.Transactional
 import java.util.Arrays
 
 @CrossOrigin
@@ -38,23 +37,13 @@ class ControllerUsuario {
 	}
 	
 	@PostMapping("/usuarios/{id}")
-	def getUsuarios(@PathVariable Long id, @RequestBody String busqueda){
+	def getAmigosParaAgregar(@PathVariable Long id, @RequestBody String usernameABuscar){
 		try {
 			
-			val String usuarioABuscar = Mapper.extraerStringDeJson(busqueda,"busqueda")
-			
-			
-			val usuarioLogueado = repoUsuarios.findById(id).orElse(null)
-			val usuarios = repoUsuarios.findAll()
-			.filter(usuario | 
-				usuario.id !== id
-				&& !usuarioLogueado.amigos.exists(amigo | amigo.equals(usuario.username) )
-				&& usuario.username.toLowerCase().contains(usuarioABuscar.toLowerCase())
-			)
-			.map(usuario | usuario.username)
-			.toList()
+			val String usernameBuscado = Mapper.extraerStringDeJson(usernameABuscar,"usernameABuscar")
+			val usernames = repoUsuarios.getAmigosNoAgregadosById(id, usernameBuscado)
 						
-			ResponseEntity.ok(usuarios)
+			ResponseEntity.ok(usernames)
 		} catch(Exception e){
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
