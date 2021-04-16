@@ -24,11 +24,11 @@ class PreguntaDTO {
 class UpdatePregunta {
 	var List<String> opciones = newArrayList
 	
-	private new(List<String> unasOpciones) {
-		opciones = unasOpciones
-	}
+	private new(){}
 	
 	def static fromPregunta(Pregunta pregunta) {
-	    new UpdatePregunta(pregunta.opciones)
+	    new UpdatePregunta() => [
+	    	opciones = pregunta.opciones
+	    ]
   }
 }

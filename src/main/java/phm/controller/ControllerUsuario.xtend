@@ -18,12 +18,12 @@ import java.util.Arrays
 
 @CrossOrigin
 @RestController
-@Transactional
 class ControllerUsuario {
 	
 	@Autowired
 	UsuarioRepository repoUsuarios
 	
+	//Hacer DTO con cosas imporantes
 	@PostMapping("/login/{nombreUsuario}")
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
 		 
@@ -35,8 +35,6 @@ class ControllerUsuario {
 			}else{
 				ResponseEntity.ok(usuario)
 			} 
-			
-		
 	}
 	
 	@PostMapping("/usuarios/{id}")
@@ -62,20 +60,19 @@ class ControllerUsuario {
 		}
 	}
 	
+	
 	// Cambiar nombre de rutas
 	@GetMapping("/perfil/{id}")
 	def getUsuarioPorId(@PathVariable Long id) {
-		
 			var Usuario usuario 
 			
-				usuario = repoUsuarios.findById(id).orElse(null)
-				usuario.amigos = Arrays.asList(usuario.amigos)
-				usuario.historial = Arrays.asList(usuario.historial)
+			usuario = repoUsuarios.findById(id).orElse(null)
+			usuario.amigos = Arrays.asList(usuario.amigos)
+			usuario.historial = Arrays.asList(usuario.historial)
 			
 			if(usuario.id === id){
 				ResponseEntity.ok(usuario)				
 			}
-		
 	}
 	
 	

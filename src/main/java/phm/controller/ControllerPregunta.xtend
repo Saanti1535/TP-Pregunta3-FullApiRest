@@ -118,8 +118,7 @@ class ControllerPregunta {
 	@PutMapping("/busqueda/pregunta/{id}")
 	def updatePreguntaPorId(@RequestBody String body, @PathVariable Long id) {
 		try {			
-//			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
-			val updatePregunta = Mapper.mapear.readValue(body, Pregunta)
+			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
 			repoPregunta.findById(id).map[pregunta | 
 				pregunta => [ 
 					opciones = updatePregunta.opciones
@@ -128,9 +127,7 @@ class ControllerPregunta {
 			].orElseThrow([
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + id + " no existe") // No se usa ResponseEntity porque no funciona con throw 
 			])
-//			ResponseEntity.ok(Mapper.mapear.writeValueAsString(updatePregunta))	
-//			ResponseEntity.ok("Operación exitosa")	
-//			return new ResponseEntity<String>("Operación exitosa", HttpStatus.OK)	
+			ResponseEntity.ok().build
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}

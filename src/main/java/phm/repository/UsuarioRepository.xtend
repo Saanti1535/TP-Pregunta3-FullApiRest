@@ -12,7 +12,8 @@ interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	@EntityGraph(attributePaths = #["amigos", "historial"])
 	def Usuario findByUsername(String username)
 	
-	@EntityGraph(attributePaths = #["historial"])
+	@EntityGraph(attributePaths = #["historial", "amigos"])
 	override Optional<Usuario> findById(Long id)
 	
+//	def Usuario getById(Long id) 
 }
