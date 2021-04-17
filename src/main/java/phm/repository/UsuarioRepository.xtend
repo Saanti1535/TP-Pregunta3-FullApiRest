@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param
 @Repository
 interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	
-	@EntityGraph(attributePaths = #["amigos", "historial"])
 	def Usuario findByUsername(String username)
 	
 	@EntityGraph(attributePaths = #["historial", "amigos"])

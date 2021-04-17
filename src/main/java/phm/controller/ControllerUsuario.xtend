@@ -14,6 +14,7 @@ import phm.domain.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.UsuarioRepository
 import java.util.Arrays
+import phm.domain.UsuarioDTO
 
 @CrossOrigin
 @RestController
@@ -28,11 +29,13 @@ class ControllerUsuario {
 		 
 			var Usuario usuario = repoUsuarios.findByUsername(nombreUsuario)
 			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
+			
+			var UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
 
 			if(usuario === null || usuario.password != claveRecibida){
 				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
 			}else{
-				ResponseEntity.ok(usuario)
+				ResponseEntity.ok(usuarioDTO)
 			} 
 	}
 	
@@ -82,9 +85,7 @@ class ControllerUsuario {
 			if(id !== actualizado.id){
 				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
 			}else{
-				camposDeUsuarioValidos(actualizado) ?
-				repoUsuarios.save(actualizado) :
-				return new ResponseEntity<String>("Los datos del usuario no son validos", HttpStatus.BAD_REQUEST)
+				repoUsuarios.save(actualizado)
 			}
 			
 			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						

@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException
 import phm.domain.UpdatePregunta
 import javax.transaction.Transactional
 import phm.repository.RegistroRespuestasRepository
+import phm.domain.PreguntaRiesgosa
 
 @RestController
 @CrossOrigin
@@ -103,8 +104,12 @@ class ControllerPregunta {
 			var pregunta = repoPregunta.findById(id).get()
 			var Usuario usuario = repoUsuario.findById(idUsuario).get()
 			
+			if(pregunta instanceof PreguntaRiesgosa){
+				
+				
+			}
 			pregunta.responder(usuario, laRespuesta)
-			repoRegistro.save(usuario.historial.last)
+			repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
 			repoUsuario.save(usuario) //Actualizacion del historial
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
