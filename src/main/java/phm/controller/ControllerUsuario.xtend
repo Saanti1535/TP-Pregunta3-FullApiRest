@@ -97,7 +97,7 @@ class ControllerUsuario {
 		
 		!(usuario.nombre.isBlank() ||
 		  usuario.apellido.isBlank() ||
-		  usuario.fechaNacimiento.isAfter(hoy)
+		  usuario.fechaNacimiento.isBefore(hoy)
 		)
 	}
 	

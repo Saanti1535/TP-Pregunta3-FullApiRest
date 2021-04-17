@@ -21,6 +21,7 @@ import phm.repository.UsuarioRepository
 import java.util.Arrays
 import org.springframework.web.server.ResponseStatusException
 import phm.domain.UpdatePregunta
+import javax.transaction.Transactional
 
 @RestController
 @CrossOrigin
@@ -91,18 +92,14 @@ class ControllerPregunta {
 	@PostMapping("/revisarRespuesta/{id}")
 	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {
 		try {
-			val repoPreguntas = RepositorioPreguntas.instance
-			
-			var Pregunta pregunta = repoPreguntas.getById(id)
-			
 			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
 			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
 
-			val repoUsuarios = RepositorioUsuarios.instance
-			
-			var Usuario usuario = repoUsuarios.getById(idUsuario)
+			var pregunta = repoPregunta.findById(id).get()
+			var Usuario usuario = repoUsuario.findById(idUsuario).get()
 			
 			pregunta.responder(usuario, laRespuesta)
+//			repoUsuario.save(usuario) //Actualizacion del historial
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
 				ResponseEntity.ok('Correcto')				
