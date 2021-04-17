@@ -136,23 +136,14 @@ class ControllerPregunta {
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
 	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable float puntos) {
 		try {
-			val repoPreguntas = RepositorioPreguntas.instance
-			val repoUsuarios = RepositorioUsuarios.instance
-			
 			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
-			nuevaPregunta.autor = repoUsuarios.getById(idAutor)
+			nuevaPregunta.autor = repoUsuario.findById(idAutor).get()
 			
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}
-
-			if(!repoPreguntas.existePregunta(nuevaPregunta.pregunta)){
-				repoPreguntas.create(nuevaPregunta)			
-				ResponseEntity.ok(Mapper.mapear.writeValueAsString(nuevaPregunta))				
-			}else{
-				return new ResponseEntity<String>("La pregunta que quiere ingresar ya existe", HttpStatus.BAD_REQUEST)	
-			}
-
+			
+			repoPregunta.save(nuevaPregunta)
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}

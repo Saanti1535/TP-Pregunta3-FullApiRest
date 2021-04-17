@@ -39,7 +39,7 @@ import javax.persistence.OrderColumn
 @DiscriminatorColumn(name="tipo_pregunta",    
                      discriminatorType=DiscriminatorType.INTEGER)
 abstract class Pregunta extends Entidad{
-	static final long minutosDeVigencia = 0
+	static final long minutosDeVigencia = 5
 	
 	@Column(length=255)
 	@Accessors var String pregunta
@@ -51,8 +51,7 @@ abstract class Pregunta extends Entidad{
 	@OrderColumn
 	var List<String> opciones = newArrayList
 	
-	@Column
-//	@Temporal(TemporalType.TIMESTAMP)
+	@Column(columnDefinition = "TIMESTAMP")
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	
 	@JsonIgnore

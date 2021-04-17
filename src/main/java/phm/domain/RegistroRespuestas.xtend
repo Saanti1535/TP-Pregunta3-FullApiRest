@@ -18,11 +18,9 @@ class RegistroRespuestas extends Entidad {
 	@Column(length=255)
 	String pregunta
 	
-	@Column
-//	@Temporal(TemporalType.TIMESTAMP) 
+	@Column(columnDefinition = "TIMESTAMP")
 	ZonedDateTime fechaRespuesta
 	
-	@Column
 	float puntosOtorgados
 	
 	@JsonProperty("fechaRespuesta")

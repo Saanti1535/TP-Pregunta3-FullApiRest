@@ -22,31 +22,25 @@ import javax.persistence.CascadeType
 @Entity
 @Table(name="usuario")
 class Usuario extends Entidad {
-	@Column
 	@Accessors String username
 	
-	@Column
 	@JsonIgnore
 	@Accessors String password
 	
-	@Column
 	@NotBlank
 	String nombre
 	
-	@Column
 	@NotBlank
 	String apellido
 	
-	@Column
+	@Column(columnDefinition = "TIMESTAMP")
 	@Past
-//	@Temporal(TemporalType.TIMESTAMP)
 	ZonedDateTime fechaNacimiento
 	
 	@ElementCollection(targetClass=String)
 	@OrderColumn
 	List<String> amigos = newLinkedList
 	
-	@Column
 	@Accessors float puntaje
 	
 	
