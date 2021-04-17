@@ -55,7 +55,7 @@ abstract class Pregunta extends Entidad{
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Accessors var Usuario autor
 	
 	@JsonProperty("idAutor")

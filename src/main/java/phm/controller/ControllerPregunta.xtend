@@ -22,6 +22,7 @@ import java.util.Arrays
 import org.springframework.web.server.ResponseStatusException
 import phm.domain.UpdatePregunta
 import javax.transaction.Transactional
+import phm.repository.RegistroRespuestasRepository
 
 @RestController
 @CrossOrigin
@@ -29,6 +30,9 @@ class ControllerPregunta {
 	
 	@Autowired
 	PreguntaRepository repoPregunta
+	
+	@Autowired
+	RegistroRespuestasRepository repoRegistro
 	
 	@Autowired
 	UsuarioRepository repoUsuario
@@ -89,6 +93,7 @@ class ControllerPregunta {
 		}
 	}
 	
+	@Transactional
 	@PostMapping("/revisarRespuesta/{id}")
 	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {
 		try {
@@ -99,7 +104,8 @@ class ControllerPregunta {
 			var Usuario usuario = repoUsuario.findById(idUsuario).get()
 			
 			pregunta.responder(usuario, laRespuesta)
-//			repoUsuario.save(usuario) //Actualizacion del historial
+			repoRegistro.save(usuario.historial.last)
+			repoUsuario.save(usuario) //Actualizacion del historial
 			
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
 				ResponseEntity.ok('Correcto')				
