@@ -9,40 +9,26 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
-import phm.domain.RepositorioPreguntas
-import phm.domain.Pregunta
-import phm.domain.RepositorioUsuarios
-import phm.domain.PreguntaSolidaria
-import phm.domain.Usuario
-import phm.repository.PreguntaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import phm.domain.PreguntaDTO
-import phm.repository.UsuarioRepository
-import java.util.Arrays
-import org.springframework.web.server.ResponseStatusException
-import phm.domain.UpdatePregunta
 import javax.transaction.Transactional
-import phm.repository.RegistroRespuestasRepository
-import phm.domain.PreguntaRiesgosa
+import phm.service.PreguntaService
 
 @RestController
 @CrossOrigin
 class ControllerPregunta {
 	
 	@Autowired
-	PreguntaRepository repoPregunta
-	
-	@Autowired
-	RegistroRespuestasRepository repoRegistro
-	
-	@Autowired
-	UsuarioRepository repoUsuario
+	PreguntaService preguntaService
+
 	
 	@GetMapping("/busqueda/preguntas")
 	def getTodasLasPreguntas() {
 		try {
-			val todasLasPreguntas = repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
-			ResponseEntity.ok(todasLasPreguntas)				
+			
+			val todasLasPreguntas = preguntaService.getTodasLasPreguntasDTO()
+			ResponseEntity.ok(todasLasPreguntas)
+							
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
@@ -52,18 +38,10 @@ class ControllerPregunta {
 	@PostMapping("/busqueda/preguntas")
 	def preguntasFiltradas(@RequestBody String unaBusqueda) {
 		try {
-			var busqueda = Mapper.extraerStringDeJson(unaBusqueda, "unaBusqueda")
-			var soloActivas = Mapper.extraerBooleanDeJson(unaBusqueda, "soloActivas")
 			
-			var Pregunta[] preguntas = repoPregunta.findByPreguntaContaining(busqueda)
-			
-			if(soloActivas){
-				preguntas = preguntas.filter[pregunta | pregunta.estaActiva].toList()				
-			}
-			
-			var PreguntaDTO[] preguntasDTO = preguntas.map [ PreguntaDTO.fromPregunta(it) ]
-			
-			ResponseEntity.ok(preguntasDTO)				
+			var PreguntaDTO[] preguntasDTO = preguntaService.getPreguntasFiltradas(unaBusqueda)
+			ResponseEntity.ok(preguntasDTO)	
+						
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
@@ -71,52 +49,17 @@ class ControllerPregunta {
 	
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
 	def preguntaPorId(@PathVariable long id, @PathVariable long idUsuario) {
-		try {
-			var Pregunta pregunta
-			try{
-				pregunta = repoPregunta.findById(id).orElse(null)
-			}catch (Exception e){
-				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
-			}
-			
-			var Usuario usuario = repoUsuario.findById(idUsuario).orElse(null)
-			
-			pregunta.opciones = Arrays.asList(pregunta.opciones)
-			pregunta.autor = repoUsuario.findById(pregunta.autor.id).orElse(null)
-			
-			if(!usuario.yaRespondio(pregunta.pregunta)){
-				ResponseEntity.ok(pregunta)	
-			}else{
-				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la repsondió anteriormente", HttpStatus.UNAUTHORIZED)					
-			}
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+			return preguntaService.getPreguntaPorId(id, idUsuario)
 	}
 	
 	@Transactional
 	@PostMapping("/revisarRespuesta/{id}")
 	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {
 		try {
-			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
-			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
-
-			var pregunta = repoPregunta.findById(id).get()
-			var Usuario usuario = repoUsuario.findById(idUsuario).get()
 			
-			if(pregunta instanceof PreguntaRiesgosa){
-				
-				
-			}
-			pregunta.responder(usuario, laRespuesta)
-			repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
-			repoUsuario.save(usuario) //Actualizacion del historial
-			
-			if(pregunta.esRespuestaCorrecta(laRespuesta)){
-				ResponseEntity.ok('Correcto')				
-			}else{
-				ResponseEntity.ok('Incorrecto')
-			}
+			var String esRespuesta = preguntaService.verificarRespuesta(respuesta, id)
+			ResponseEntity.ok(esRespuesta)
+		
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
@@ -124,17 +67,9 @@ class ControllerPregunta {
 	
 	
 	@PutMapping("/busqueda/pregunta/{id}")
-	def updatePreguntaPorId(@RequestBody String body, @PathVariable Long id) {
+	def updatePreguntaPorId(@RequestBody String body, @PathVariable long id) {
 		try {			
-			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
-			repoPregunta.findById(id).map[pregunta | 
-				pregunta => [ 
-					opciones = updatePregunta.opciones
-				]
-				repoPregunta.save(pregunta)
-			].orElseThrow([
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + id + " no existe") // No se usa ResponseEntity porque no funciona con throw 
-			])
+			preguntaService.updatePreguntaForId(body, id)
 			ResponseEntity.ok().build
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -142,16 +77,9 @@ class ControllerPregunta {
 	}
 	
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
-	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable float puntos) {
+	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
 		try {
-			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
-			nuevaPregunta.autor = repoUsuario.findById(idAutor).get()
-			
-			if (nuevaPregunta instanceof PreguntaSolidaria){
-				nuevaPregunta.asignarPuntos(puntos)
-			}
-			
-			repoPregunta.save(nuevaPregunta)
+			preguntaService.crearPregunta(body, idAutor, puntos)
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
 		}
