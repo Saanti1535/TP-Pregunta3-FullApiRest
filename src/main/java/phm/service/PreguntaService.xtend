@@ -102,7 +102,7 @@ class PreguntaService {
 			])
 	}
 	
-	def crearPregunta(String body, long idAutor, int puntos){
+	def void crearPregunta(String body, long idAutor, int puntos){
 			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
 			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
 			

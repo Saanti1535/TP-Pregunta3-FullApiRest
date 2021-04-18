@@ -78,11 +78,9 @@ class ControllerPregunta {
 	
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
 	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
-		try {
+		
 			preguntaService.crearPregunta(body, idAutor, puntos)
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+		
 	}
 	
 
