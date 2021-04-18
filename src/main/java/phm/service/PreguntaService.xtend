@@ -54,10 +54,10 @@ class PreguntaService {
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
-			var Usuario usuario = usuarioService.getUsuarioById(idUsuario)
+			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
-			pregunta.autor = usuarioService.getUsuarioById(pregunta.autor.id)
+			pregunta.autor = usuarioService.buscarPorId(pregunta.autor.id).orElse(null)
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				return ResponseEntity.ok(pregunta)	
@@ -74,11 +74,11 @@ class PreguntaService {
 			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
 
 			var pregunta = repoPregunta.findById(idPregunta).get()
-			var Usuario usuario = usuarioService.getUsuarioById(idUsuario)
+			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
 			
 			pregunta.responder(usuario, laRespuesta)
 			repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
-			usuarioService.guardarUsuario(usuario) //Actualizacion del historial	
+			usuarioService.actualizar(usuario) //Actualizacion del historial	
 			
 			var String esRespuesta
 			if(pregunta.esRespuestaCorrecta(laRespuesta)){
@@ -104,7 +104,7 @@ class PreguntaService {
 	
 	def crearPregunta(String body, long idAutor, int puntos){
 			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
-			nuevaPregunta.autor = usuarioService.getUsuarioById(idAutor)
+			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
 			
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)

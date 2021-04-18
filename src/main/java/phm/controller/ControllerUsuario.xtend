@@ -12,95 +12,47 @@ import org.springframework.web.bind.annotation.PutMapping
 import java.time.ZonedDateTime
 import phm.domain.Usuario
 import org.springframework.beans.factory.annotation.Autowired
-import phm.repository.UsuarioRepository
 import java.util.Arrays
 import phm.domain.UsuarioDTO
+import phm.service.UsuarioService
 
 @CrossOrigin
 @RestController
 class ControllerUsuario {
-	
-	@Autowired
-	UsuarioRepository repoUsuarios
-	
-	//Hacer DTO con cosas imporantes
-	@PostMapping("/login/{nombreUsuario}")
-	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String nombreUsuario) {
-		 
-			var Usuario usuario = repoUsuarios.findByUsername(nombreUsuario)
-			var String claveRecibida = Mapper.extraerStringDeJson(password, "password")
-			
-			var UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
 
-			if(usuario === null || usuario.password != claveRecibida){
-				return new ResponseEntity<String>("Usuario o contraseña incorrecto/a", HttpStatus.UNAUTHORIZED)
-			}else{
-				ResponseEntity.ok(usuarioDTO)
-			} 
+	@Autowired
+	UsuarioService usuarioService
+
+	@PostMapping("/login/{username}")
+	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String username) {
+
+		val String claveRecibida = Mapper.extraerStringDeJson(password, "password")
+		val Usuario usuario = usuarioService.buscarPorUsername(username, claveRecibida)
+		val UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
+
+		return usuarioDTO
 	}
-	
-	@PostMapping("/usuarios/{id}")
-	def getAmigosParaAgregar(@PathVariable Long id, @RequestBody String usernameABuscar){
-		try {
-			
-			val String usernameBuscado = Mapper.extraerStringDeJson(usernameABuscar,"usernameABuscar")
-			val usernames = repoUsuarios.getAmigosNoAgregadosById(id, usernameBuscado)
-						
-			ResponseEntity.ok(usernames)
-		} catch(Exception e){
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+
+	@GetMapping("/usuarios/{id},{usernameABuscar}")
+	def getAmigosParaAgregar(@PathVariable Long id, @PathVariable String usernameABuscar) {
+
+		return this.usuarioService.buscarNoAgregados(id, usernameABuscar)
 	}
-	
-	
+
 	// Cambiar nombre de rutas
-	@GetMapping("/perfil/{id}")
+	@GetMapping("/usuario/{id}")
 	def getUsuarioPorId(@PathVariable Long id) {
-			var Usuario usuario 
-			
-			usuario = repoUsuarios.findById(id).orElse(null)
-			usuario.amigos = Arrays.asList(usuario.amigos)
-			usuario.historial = Arrays.asList(usuario.historial)
-			
-			if(usuario.id === id){
-				ResponseEntity.ok(usuario)				
-			}
+		var Usuario usuario = usuarioService.buscarPorId(id).orElse(null)
+		usuario.amigos = Arrays.asList(usuario.amigos)
+		usuario
 	}
-	
-	
-	@PutMapping("/perfil/{id}")
+
+	@PutMapping("/actualizar/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Long id) {
-					
-			//Chequear si puede pasar que exista un ID null 
-			if(id === null){
-				return new ResponseEntity<String>("Error de identificación", HttpStatus.BAD_REQUEST)
-			}
-			
-			
-			val actualizado = Mapper.mapear.readValue(body, Usuario)
-			val usuarioOriginal = repoUsuarios.findById(id).orElse(null)
-			actualizado.username = usuarioOriginal.username
-			actualizado.password = usuarioOriginal.password
-			
-			if(id !== actualizado.id){
-				return new ResponseEntity<String>("Error de indentificación", HttpStatus.BAD_REQUEST)
-			}else{
-				repoUsuarios.save(actualizado)
-			}
-			
-			ResponseEntity.ok(Mapper.mapear.writeValueAsString(actualizado))						
-		
+
+		val usuario = Mapper.mapear.readValue(body, Usuario)
+		usuarioService.actualizar(usuario)
+
 	}
-	
-	
-	def boolean camposDeUsuarioValidos(Usuario usuario) {
-		val ZonedDateTime hoy = ZonedDateTime.now()
-		
-		!(usuario.nombre.isBlank() ||
-		  usuario.apellido.isBlank() ||
-		  usuario.fechaNacimiento.isBefore(hoy)
-		)
-	}
-	
 
 }

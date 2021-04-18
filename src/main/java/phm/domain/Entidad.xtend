@@ -12,7 +12,7 @@ import javax.persistence.GenerationType
 abstract class Entidad { 
 	@Id	
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	@Accessors long id
+	@Accessors Long id
 	
 	@JsonIgnore
 	@Column	

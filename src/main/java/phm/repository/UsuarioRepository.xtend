@@ -17,6 +17,10 @@ interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	@EntityGraph(attributePaths = #["historial", "amigos"])
 	override Optional<Usuario> findById(Long id)
 	
+	def List<String> findAmigosById(Long id)
+	
+	def List<Usuario> findByUsernameNotIn(List<String> amigos)
+	
 	//Trae los amigos del usuario (id)
 	@Query(value = "SELECT amigos FROM usuario_amigos tabla WHERE tabla.usuario_id = :id", nativeQuery = true)
 	def List<String> getAmigosById(@Param("id") Long id)
@@ -27,6 +31,7 @@ interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 						AND u.id != :id
 						AND u.username LIKE %:usernameABuscar%", nativeQuery = true)
 	def List<String> getAmigosNoAgregadosById(@Param("id") Long id, @Param("usernameABuscar")String usernameABuscar)
+	
 	
 //	def Usuario getById(Long id) 
 }

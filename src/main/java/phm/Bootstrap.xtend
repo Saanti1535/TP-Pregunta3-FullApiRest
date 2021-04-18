@@ -247,7 +247,7 @@ class Bootstrap implements InitializingBean{
 	/*************************** RUN *******************************/
 	override afterPropertiesSet() throws Exception {
 		if(datosNoCargados){
-			initRegistros()	
+			initRegistros()
 			initUsuarios()
 			initPreguntas()
 		}	
