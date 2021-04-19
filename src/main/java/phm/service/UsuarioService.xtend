@@ -6,6 +6,7 @@ import phm.repository.UsuarioRepository
 import phm.domain.Usuario
 import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
+import javax.transaction.Transactional
 
 @Service
 @Validated
@@ -32,6 +33,7 @@ class UsuarioService {
 		(usuario === null || password != claveRecibida) ? throw new SecurityException("Usuario o contraseña incorrectos")
 	}
 	
+	@Transactional
 	def actualizar(@Valid Usuario actualizado){
 		val usuarioOriginal = repoUsuario.findById(actualizado.id).orElse(null)
 		actualizado.username = usuarioOriginal.username

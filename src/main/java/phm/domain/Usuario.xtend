@@ -27,14 +27,14 @@ class Usuario extends Entidad {
 	@JsonIgnore
 	@Accessors String password
 	
-	@NotBlank
+	@NotBlank(message = "El usuario debe tener un nombre")
 	String nombre
 	
-	@NotBlank
+	@NotBlank(message = "El usuario debe tener un apellido")
 	String apellido
 	
 	@Column(columnDefinition = "TIMESTAMP")
-	@Past
+	@Past(message = "La fecha de nacimiento debe ser anterior a hoy")
 	ZonedDateTime fechaNacimiento
 	
 	@ElementCollection(targetClass=String)
