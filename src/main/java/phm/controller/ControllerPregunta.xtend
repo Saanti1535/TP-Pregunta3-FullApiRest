@@ -54,15 +54,8 @@ class ControllerPregunta {
 	
 	@Transactional
 	@PostMapping("/revisarRespuesta/{id}")
-	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {
-		try {
-			
-			var String esRespuesta = preguntaService.verificarRespuesta(respuesta, id)
-			ResponseEntity.ok(esRespuesta)
-		
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acci�n", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
+	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long id) {	
+			preguntaService.verificarRespuesta(respuesta, id)
 	}
 	
 	

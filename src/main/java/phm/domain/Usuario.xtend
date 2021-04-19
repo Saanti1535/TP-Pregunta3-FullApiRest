@@ -16,6 +16,7 @@ import javax.persistence.Column
 import javax.persistence.OrderColumn
 import javax.persistence.FetchType
 import java.util.Set
+import javax.persistence.CascadeType
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 
@@ -43,7 +44,7 @@ class Usuario extends Entidad {
 	
 	@Accessors float puntaje
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
 	Set<RegistroRespuestas> historial = newHashSet
 
 	def void agregarPuntos(float puntos) {
