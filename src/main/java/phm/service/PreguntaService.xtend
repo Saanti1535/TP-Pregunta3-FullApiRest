@@ -76,18 +76,26 @@ class PreguntaService {
 			var pregunta = repoPregunta.findById(idPregunta).get()
 			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
 			
-			pregunta.responder(usuario, laRespuesta)
-			repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
-			usuarioService.actualizar(usuario) //Actualizacion del historial	
+			if (pregunta.estaActiva) {
+				
+				pregunta.responder(usuario, laRespuesta)
+				repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
+				usuarioService.actualizar(usuario) //Actualizacion del historial	
+				
+				var String esRespuesta
+				
+				if(pregunta.esRespuestaCorrecta(laRespuesta)){
+					esRespuesta = 'Correcto'				
+				}else{
+					esRespuesta = 'Incorrecto'
+				}	
+				
+				return esRespuesta
+			} else {
+				return 'No puede responder esta pregunta ya que se encuentra inactiva'
+			}
 			
-			var String esRespuesta
-			if(pregunta.esRespuestaCorrecta(laRespuesta)){
-				esRespuesta = 'Correcto'				
-			}else{
-				esRespuesta = 'Incorrecto'
-			}	
 			
-			return esRespuesta
 	}
 	
 	def updatePreguntaForId(String body, long idPregunta){

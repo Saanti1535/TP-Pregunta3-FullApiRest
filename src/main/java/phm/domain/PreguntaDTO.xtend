@@ -8,6 +8,7 @@ class PreguntaDTO {
   Long id
   String pregunta
   Long idAutor
+  boolean activa
 
   private new() {}
 
@@ -16,6 +17,7 @@ class PreguntaDTO {
       id = pregunta.id
       pregunta = pregunta.pregunta
       idAutor = pregunta.getIdAutor()
+      activa = pregunta.estaActiva
     ]
   }
 }
