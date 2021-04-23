@@ -32,7 +32,6 @@ class ControllerUsuario {
 
 	@GetMapping("/usuarios/{id},{usernameABuscar}")
 	def getAmigosParaAgregar(@PathVariable Long id, @PathVariable String usernameABuscar) {
-
 		return this.usuarioService.buscarNoAgregados(id, usernameABuscar)
 	}
 

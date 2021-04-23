@@ -20,10 +20,10 @@ import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.ManyToOne
 import javax.persistence.Column
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
 import javax.persistence.FetchType
 import javax.persistence.OrderColumn
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,13 +42,16 @@ abstract class Pregunta extends Entidad{
 	static final long minutosDeVigencia = 5
 	
 	@Column(length=255)
+	@NotBlank(message = "El campo pregunta no puede estar vacío")
 	@Accessors var String pregunta
 	
 	@Column(length=255)
+	@NotBlank(message = "La pregunta debe tener una respuesta correcta indicada")
 	var String respuestaCorrecta
 	
 	@ElementCollection(targetClass=String)
 	@OrderColumn
+	@Size(min=2, message = "La pregunta debe tener al menos dos opciones")
 	var List<String> opciones = newArrayList
 	
 	@Column(columnDefinition = "TIMESTAMP")

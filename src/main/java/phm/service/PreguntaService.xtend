@@ -7,7 +7,6 @@ import phm.domain.PreguntaDTO
 import phm.controller.Mapper
 import phm.domain.Pregunta
 import java.util.Arrays
-import javassist.NotFoundException
 import phm.domain.Usuario
 import phm.repository.RegistroRespuestasRepository
 import phm.domain.UpdatePregunta
@@ -114,11 +113,9 @@ class PreguntaService {
 			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
 			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
 			
-			//METER VALIDACIONES ACAAAAAAAAAAAAAAAAAAAAAAA
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}
-			
 			repoPregunta.save(nuevaPregunta)
 	}
 	

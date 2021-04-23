@@ -71,7 +71,7 @@ class Usuario extends Entidad {
 		this.nombre = actualizado.nombre
 		this.apellido = actualizado.apellido
 		this.fechaNacimiento = actualizado.fechaNacimiento
-		this.amigos = actualizado.amigos
+		this.amigos != actualizado.amigos ? this.amigos = actualizado.amigos // Si los amigos no cambian no pisamos los valores. Si lo hacemos, se hacen queries innecesarias
 	}
 
 }
