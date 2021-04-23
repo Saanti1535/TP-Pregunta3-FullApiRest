@@ -62,7 +62,7 @@ class ControllerPregunta {
 	@PutMapping("/busqueda/pregunta/{id}")
 	def updatePreguntaPorId(@RequestBody String body, @PathVariable long id) {
 		try {			
-			preguntaService.updatePreguntaForId(body, id)
+			preguntaService.updatePreguntaById(body, id)
 			ResponseEntity.ok().build
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -71,9 +71,7 @@ class ControllerPregunta {
 	
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
 	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
-		
-			preguntaService.crearPregunta(body, idAutor, puntos)
-		
+		preguntaService.crearPregunta(body, idAutor, puntos)
 	}
 	
 

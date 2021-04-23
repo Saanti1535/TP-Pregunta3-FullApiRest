@@ -57,12 +57,12 @@ class PreguntaService {
 			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
-			pregunta.autor = usuarioService.buscarPorId(pregunta.autor.id).orElse(null)
+			pregunta.autor = usuarioService.buscarPorId(pregunta.autor.id).orElse(null) // ver de que venga todo junto con la pregunta (preg y autor)
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				return ResponseEntity.ok(pregunta)	
 			}else{
-				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la repsondió anteriormente", HttpStatus.UNAUTHORIZED)					
+				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la respondió anteriormente", HttpStatus.UNAUTHORIZED)					
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -98,7 +98,7 @@ class PreguntaService {
 			
 	}
 	
-	def updatePreguntaForId(String body, long idPregunta){
+	def updatePreguntaById(String body, long idPregunta){
 			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
 			repoPregunta.findById(idPregunta).map[pregunta | 
 				pregunta => [ 
@@ -114,6 +114,7 @@ class PreguntaService {
 			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
 			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
 			
+			//METER VALIDACIONES ACAAAAAAAAAAAAAAAAAAAAAAA
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}

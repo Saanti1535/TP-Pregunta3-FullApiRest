@@ -17,6 +17,7 @@ import javax.persistence.OrderColumn
 import javax.persistence.FetchType
 import java.util.Set
 import javax.persistence.CascadeType
+import javax.persistence.JoinColumn
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 
@@ -45,6 +46,7 @@ class Usuario extends Entidad {
 	@Accessors float puntaje
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
+	@JoinColumn(name="id_usuario")
 	Set<RegistroRespuestas> historial = newHashSet
 
 	def void agregarPuntos(float puntos) {
@@ -63,6 +65,13 @@ class Usuario extends Entidad {
 	
 	def yaRespondio(String preguntaAResponder){
 		historial.exists[respuesta | respuesta.pregunta == preguntaAResponder]
+	}
+	
+	def update(Usuario actualizado) {
+		this.nombre = actualizado.nombre
+		this.apellido = actualizado.apellido
+		this.fechaNacimiento = actualizado.fechaNacimiento
+		this.amigos = actualizado.amigos
 	}
 
 }

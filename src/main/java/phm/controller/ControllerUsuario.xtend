@@ -1,7 +1,5 @@
 package phm.controller
 
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
-import java.time.ZonedDateTime
 import phm.domain.Usuario
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.Arrays
@@ -49,10 +46,9 @@ class ControllerUsuario {
 
 	@PutMapping("/actualizar/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Long id) {
-
 		val usuario = Mapper.mapear.readValue(body, Usuario)
 		usuarioService.actualizar(usuario)
-
+		
 	}
 
 }

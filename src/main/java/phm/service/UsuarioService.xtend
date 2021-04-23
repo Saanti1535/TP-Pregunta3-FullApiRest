@@ -36,9 +36,8 @@ class UsuarioService {
 	@Transactional
 	def actualizar(@Valid Usuario actualizado){
 		val usuarioOriginal = repoUsuario.findById(actualizado.id).orElse(null)
-		actualizado.username = usuarioOriginal.username
-		actualizado.password = usuarioOriginal.password
-		repoUsuario.save(actualizado)
+		usuarioOriginal.update(actualizado)
+		repoUsuario.save(usuarioOriginal)
 	}
 	
 }
