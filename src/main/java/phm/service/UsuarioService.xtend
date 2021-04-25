@@ -15,7 +15,7 @@ class UsuarioService {
 	@Autowired
 	UsuarioRepository repoUsuario
 	
-	def buscarPorUsername(String username, String claveRecibida){
+	def buscarPorUsernameYContrasenia(String username, String claveRecibida){
 		val usuario = repoUsuario.findByUsername(username)
 		validar(usuario, usuario.password, claveRecibida)
 		usuario

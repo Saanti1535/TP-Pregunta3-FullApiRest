@@ -21,6 +21,12 @@ class ExceptionControllerAdvice {
 	
 	@ExceptionHandler(ConstraintViolationException)
 	def ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException excepcion) {
-		return new ResponseEntity<String>(excepcion.localizedMessage, HttpStatus.BAD_REQUEST)
+		return new ResponseEntity<String>(mensajeDeErrorEnValidacion(excepcion.message), HttpStatus.BAD_REQUEST)
+	}
+	
+	private def mensajeDeErrorEnValidacion(String mensaje){
+		val int indiceComienzoError = mensaje.indexOf(": ") + 1
+		mensaje.substring(indiceComienzoError)
+		
 	}
 }

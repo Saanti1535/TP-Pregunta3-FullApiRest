@@ -151,6 +151,12 @@ class Bootstrap implements InitializingBean{
 		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 19, 4, 15, 0, ZoneId.of("GMT-3"));
 		puntosOtorgados = 15
 	]
+	
+	var registroJuana04 = new RegistroRespuestas => [
+		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
+		fechaRespuesta = ZonedDateTime.of(2021, 2, 20, 19, 4, 15, 0, ZoneId.of("GMT-3"));
+		puntosOtorgados = 15
+	]
 
 	var registroJose01 = new RegistroRespuestas => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
@@ -201,6 +207,7 @@ class Bootstrap implements InitializingBean{
 		crearRegistro(registroJuana01)
 		crearRegistro(registroJuana02)
 		crearRegistro(registroJuana03)
+		crearRegistro(registroJuana04)
 		crearRegistro(registroJose01)
 		crearRegistro(registroJose02)
 		crearRegistro(registroJose03)

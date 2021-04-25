@@ -24,7 +24,7 @@ class ControllerUsuario {
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String username) {
 
 		val String claveRecibida = Mapper.extraerStringDeJson(password, "password")
-		val Usuario usuario = usuarioService.buscarPorUsername(username, claveRecibida)
+		val Usuario usuario = usuarioService.buscarPorUsernameYContrasenia(username, claveRecibida)
 		val UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
 
 		return usuarioDTO
