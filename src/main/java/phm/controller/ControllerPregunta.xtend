@@ -47,7 +47,7 @@ class ControllerPregunta {
 	}
 	
 	@Transactional
-	@PostMapping("/revisarRespuesta/{id}")
+	@PostMapping("/revisarRespuesta/{idPregunta}")
 	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long idPregunta) {
 			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
 			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
