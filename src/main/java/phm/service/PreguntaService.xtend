@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.PreguntaRepository
 import phm.domain.PreguntaDTO
-import phm.controller.Mapper
 import phm.domain.Pregunta
 import java.util.Arrays
 import phm.domain.Usuario
@@ -14,8 +13,12 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.http.HttpStatus
 import phm.domain.PreguntaSolidaria
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
+import javax.transaction.Transactional
 
 @Service
+@Validated
 class PreguntaService {
 
 	@Autowired
@@ -31,9 +34,7 @@ class PreguntaService {
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
 	
-	def getPreguntasFiltradas(String unaBusqueda){
-			var busqueda = Mapper.extraerStringDeJson(unaBusqueda, "unaBusqueda")
-			var soloActivas = Mapper.extraerBooleanDeJson(unaBusqueda, "soloActivas")
+	def getPreguntasFiltradas(String busqueda, boolean soloActivas){
 			
 			var Pregunta[] preguntas = repoPregunta.findByPreguntaContaining(busqueda)
 			
@@ -45,7 +46,6 @@ class PreguntaService {
 	}
 	
 	def getPreguntaPorId(long idPregunta, long idUsuario){
-		try {
 			var Pregunta pregunta
 			try{
 				pregunta = repoPregunta.findById(idPregunta).orElse(null)
@@ -59,18 +59,15 @@ class PreguntaService {
 			pregunta.autor = usuarioService.buscarPorId(pregunta.autor.id).orElse(null) // ver de que venga todo junto con la pregunta (preg y autor)
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
-				return ResponseEntity.ok(pregunta)	
+				pregunta
 			}else{
 				return new ResponseEntity<String>("No se puede acceder a la pregunta dado que ya la respondió anteriormente", HttpStatus.UNAUTHORIZED)					
 			}
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}	
+		
 	}
 	
-	def verificarRespuesta(String respuesta, long idPregunta){
-			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
-			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
+	def verificarRespuesta(String laRespuesta, long idPregunta, long idUsuario){
+			
 
 			var pregunta = repoPregunta.findById(idPregunta).get()
 			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
@@ -97,8 +94,9 @@ class PreguntaService {
 			
 	}
 	
-	def updatePreguntaById(String body, long idPregunta){
-			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
+	@Transactional
+	def updatePreguntaById(UpdatePregunta updatePregunta, long idPregunta){
+			
 			repoPregunta.findById(idPregunta).map[pregunta | 
 				pregunta => [ 
 					opciones = updatePregunta.opciones
@@ -109,8 +107,9 @@ class PreguntaService {
 			])
 	}
 	
-	def void crearPregunta(String body, long idAutor, int puntos){
-			val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
+	@Transactional
+	def void crearPregunta(@Valid Pregunta nuevaPregunta, long idAutor, int puntos){
+			
 			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
 			
 			if (nuevaPregunta instanceof PreguntaSolidaria){

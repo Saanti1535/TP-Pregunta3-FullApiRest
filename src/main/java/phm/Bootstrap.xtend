@@ -238,6 +238,7 @@ class Bootstrap implements InitializingBean{
 		juana.historial.add(registroJuana01)
 		juana.historial.add(registroJuana02)
 		juana.historial.add(registroJuana03)
+		juana.historial.add(registroJuana04)
 		jose.historial.add(registroJose01)
 		jose.historial.add(registroJose02)
 		jose.historial.add(registroJose03)
