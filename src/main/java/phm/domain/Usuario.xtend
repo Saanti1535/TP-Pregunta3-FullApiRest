@@ -18,6 +18,7 @@ import javax.persistence.FetchType
 import java.util.Set
 import javax.persistence.CascadeType
 import javax.persistence.JoinColumn
+import javax.validation.constraints.Size
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
 

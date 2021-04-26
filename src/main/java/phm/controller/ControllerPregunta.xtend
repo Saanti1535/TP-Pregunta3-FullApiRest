@@ -70,7 +70,9 @@ class ControllerPregunta {
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
 	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
 		val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
+		System.out.println("Aca llego0")
 		preguntaService.crearPregunta(nuevaPregunta, idAutor, puntos)
+		System.out.println("Aca llego6")
 	}
 	
 

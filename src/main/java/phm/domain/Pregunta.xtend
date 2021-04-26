@@ -51,8 +51,8 @@ abstract class Pregunta extends Entidad{
 	
 	@ElementCollection(targetClass=String)
 	@OrderColumn
-	@Size(min=2, message = "La pregunta debe tener al menos dos opciones")
-	@Accessors var List<String> opciones = newArrayList
+	@Size(min = 2, message = "La pregunta debe tener al menos 2 opciones")
+	var List<String> opciones = newArrayList
 	
 	@Column(columnDefinition = "TIMESTAMP")
 	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion

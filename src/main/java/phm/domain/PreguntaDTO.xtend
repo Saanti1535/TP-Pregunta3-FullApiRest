@@ -2,6 +2,7 @@ package phm.domain
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
+import javax.validation.constraints.Size
 
 @Accessors
 class PreguntaDTO {
@@ -24,6 +25,7 @@ class PreguntaDTO {
 
 @Accessors
 class UpdatePregunta {
+	@Size(min = 2, message = "La preguntna debe tener al menos 2 opciones")
 	var List<String> opciones = newArrayList
 	
 	 new(){}

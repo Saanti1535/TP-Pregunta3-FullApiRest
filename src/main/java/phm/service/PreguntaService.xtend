@@ -95,7 +95,7 @@ class PreguntaService {
 	}
 	
 	@Transactional
-	def updatePreguntaById(UpdatePregunta updatePregunta, long idPregunta){
+	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, long idPregunta){
 			
 			repoPregunta.findById(idPregunta).map[pregunta | 
 				pregunta => [ 
@@ -109,9 +109,7 @@ class PreguntaService {
 	
 	@Transactional
 	def void crearPregunta(@Valid Pregunta nuevaPregunta, long idAutor, int puntos){
-			
 			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
-			
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}
