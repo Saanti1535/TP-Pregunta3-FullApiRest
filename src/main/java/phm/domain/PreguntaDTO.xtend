@@ -25,14 +25,16 @@ class PreguntaDTO {
 
 @Accessors
 class UpdatePregunta {
-	@Size(min = 2, message = "La preguntna debe tener al menos 2 opciones")
+	@Size(min = 2, message = "La pregunta debe tener al menos 2 opciones")
 	var List<String> opciones = newArrayList
+	var String respuestaCorrecta
 	
 	 new(){}
 	
 	def static fromPregunta(Pregunta pregunta) {
 	    new UpdatePregunta() => [
 	    	opciones = pregunta.opciones
+	    	respuestaCorrecta = pregunta.respuestaCorrecta
 	    ]
   }
 }

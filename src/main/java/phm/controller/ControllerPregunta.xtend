@@ -57,22 +57,16 @@ class ControllerPregunta {
 	
 	
 	@PutMapping("/busqueda/pregunta/{id}")
-	def updatePreguntaPorId(@RequestBody String body, @PathVariable long id) {
-		try {			
+	def updatePreguntaPorId(@RequestBody String body, @PathVariable long id) {		
 			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
 			preguntaService.updatePreguntaById(updatePregunta, id)
 			ResponseEntity.ok().build
-		} catch (Exception e) {
-			return new ResponseEntity<String>("No se pudo completar la acción", HttpStatus.INTERNAL_SERVER_ERROR)
-		}
 	}
 	
 	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
 	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
 		val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
-		System.out.println("Aca llego0")
 		preguntaService.crearPregunta(nuevaPregunta, idAutor, puntos)
-		System.out.println("Aca llego6")
 	}
 	
 

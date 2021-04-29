@@ -100,6 +100,7 @@ class PreguntaService {
 			repoPregunta.findById(idPregunta).map[pregunta | 
 				pregunta => [ 
 					opciones = updatePregunta.opciones
+					respuestaCorrecta = updatePregunta.respuestaCorrecta
 				]
 				repoPregunta.save(pregunta)
 			].orElseThrow([
