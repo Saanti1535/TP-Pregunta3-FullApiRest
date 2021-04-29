@@ -3,6 +3,7 @@ package phm.domain
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
 import javax.validation.constraints.Size
+import javax.validation.constraints.NotNull
 
 @Accessors
 class PreguntaDTO {
@@ -27,6 +28,7 @@ class PreguntaDTO {
 class UpdatePregunta {
 	@Size(min = 2, message = "La pregunta debe tener al menos 2 opciones")
 	var List<String> opciones = newArrayList
+	@NotNull(message = "La pregunta debe tener al menos una opcion correcta")
 	var String respuestaCorrecta
 	
 	 new(){}
