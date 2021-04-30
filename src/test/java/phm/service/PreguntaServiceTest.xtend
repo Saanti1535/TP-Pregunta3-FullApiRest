@@ -11,9 +11,10 @@ import phm.domain.Pregunta
 import phm.repository.PreguntaRepository
 import phm.domain.PreguntaSimple
 import javax.validation.ConstraintViolationException
-import phm.domain.UpdatePregunta
+import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("Testeo al service de preguntas")
 class PreguntaServiceTest {
 	
@@ -61,9 +62,11 @@ class PreguntaServiceTest {
 	
 //	@Test
 //	@DisplayName("Se actualiza una pregunta de forma correcta")
+//	@Transactional
 //	def void actualizarPregunta() {
 //		val UpdatePregunta updatePregunta = new UpdatePregunta 
-//		updatePregunta.opciones = #['Opcion 5', 'Opcion 6']
+//		updatePregunta.opciones = Arrays.asList('Opcion 5', 'Opcion 6')
+//		updatePregunta.respuestaCorrecta = "Opcion 5"
 //		val Pregunta pregunta = preguntaRepository.findById(1L).orElse(null)
 //		
 //		preguntaService.updatePreguntaById(updatePregunta, 1L)

@@ -75,7 +75,7 @@ class PreguntaService {
 			if (pregunta.estaActiva) {
 				
 				pregunta.responder(usuario, laRespuesta)
-				repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
+				//repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
 				usuarioService.actualizar(usuario) //Actualizacion del historial	
 				
 				var String esRespuesta
