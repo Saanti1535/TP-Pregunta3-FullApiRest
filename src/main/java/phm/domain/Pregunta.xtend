@@ -39,7 +39,7 @@ import javax.validation.constraints.Size
 @DiscriminatorColumn(name="tipo_pregunta",    
                      discriminatorType=DiscriminatorType.INTEGER)
 abstract class Pregunta extends Entidad{
-	static final long minutosDeVigencia = 5
+	public static final long minutosDeVigencia = 5
 	
 	@Column(length=255)
 	@NotBlank(message = "El campo pregunta no puede estar vacío")

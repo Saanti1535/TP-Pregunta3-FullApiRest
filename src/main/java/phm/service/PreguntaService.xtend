@@ -7,7 +7,6 @@ import phm.domain.PreguntaDTO
 import phm.domain.Pregunta
 import java.util.Arrays
 import phm.domain.Usuario
-import phm.repository.RegistroRespuestasRepository
 import phm.domain.UpdatePregunta
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.http.HttpStatus
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
 import javax.transaction.Transactional
+import java.time.ZonedDateTime
 
 @Service
 @Validated
@@ -27,20 +27,19 @@ class PreguntaService {
 	@Autowired
 	UsuarioService usuarioService
 	
-	@Autowired
-	RegistroRespuestasRepository repoRegistro
-	
 	def getTodasLasPreguntasDTO(){
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
 	
 	def getPreguntasFiltradas(String busqueda, boolean soloActivas){
+			var Pregunta[] preguntas
+			var int minutosDeVigencia = Pregunta.minutosDeVigencia as int
+			var fechaDesdeParaQueEstenActivas = ZonedDateTime.now().minusMinutes(minutosDeVigencia)
 			
-			var Pregunta[] preguntas = repoPregunta.findByPreguntaContaining(busqueda)
 			
 			if(soloActivas){
-				preguntas = preguntas.filter[pregunta | pregunta.estaActiva].toList()				
-			}
+				preguntas = repoPregunta.obtenerPreguntasFiltradasActivas(busqueda, fechaDesdeParaQueEstenActivas)				
+			} else preguntas = repoPregunta.findByPreguntaContaining(busqueda)
 			
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
 	}
