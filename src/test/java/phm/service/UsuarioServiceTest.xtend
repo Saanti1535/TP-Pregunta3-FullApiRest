@@ -22,7 +22,8 @@ class UsuarioServiceTest {
 		val username = 'pep'
 		val contraseña = '123456'
 		
-		val Usuario usuarioEncontrado = usuarioService.buscarPorUsernameYContrasenia(username, contraseña)
+		val Long idUsuarioEncontrado = usuarioService.buscarPorUsernameYContrasenia(username, contraseña)
+		val Usuario usuarioEncontrado = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(idUsuarioEncontrado).orElse(null)
 		
 		assertEquals(usuarioEncontrado.username, username)
 		assertEquals(usuarioEncontrado.password, contraseña)
