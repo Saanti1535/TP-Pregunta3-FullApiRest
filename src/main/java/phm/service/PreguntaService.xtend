@@ -52,10 +52,9 @@ class PreguntaService {
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
-			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
+			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
-			pregunta.autor = usuarioService.buscarPorId(pregunta.autor.id).orElse(null) // ver de que venga todo junto con la pregunta (preg y autor)
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				pregunta
@@ -69,12 +68,11 @@ class PreguntaService {
 			
 
 			var pregunta = repoPregunta.findById(idPregunta).get()
-			var Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null)
+			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
 			if (pregunta.estaActiva) {
 				
 				pregunta.responder(usuario, laRespuesta)
-				//repoRegistro.save(usuario.historial.last) //Se crea el registro en la base
 				usuarioService.actualizar(usuario) //Actualizacion del historial	
 				
 				var String esRespuesta
@@ -109,7 +107,7 @@ class PreguntaService {
 	
 	@Transactional
 	def void crearPregunta(@Valid Pregunta nuevaPregunta, long idAutor, int puntos){
-			nuevaPregunta.autor = usuarioService.buscarPorId(idAutor).orElse(null)
+			nuevaPregunta.autor = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(idAutor).orElse(null)
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}

@@ -25,6 +25,13 @@ class UsuarioService {
 		repoUsuario.findById(id)
 	}
 	
+	def buscarUsuarioSinLosAmigosPorId(Long id){
+		repoUsuario.findUsuarioSinAmigosById(id)
+	}
+	def buscarUsuarioSinAmigosNiHistorialPorId(Long id){
+		repoUsuario.findUsuarioSinAmigosNiHistorialById(id)
+	}
+	
 	def buscarNoAgregados(Long id, String usuarioBuscado) {
 		repoUsuario.getAmigosNoAgregadosById(id, usuarioBuscado)
 	}

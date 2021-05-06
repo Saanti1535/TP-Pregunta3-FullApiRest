@@ -16,7 +16,7 @@ interface PreguntaRepository extends CrudRepository<Pregunta, Long> {
 	
 	def Pregunta findByPregunta(String pregunta)
 	
-	@EntityGraph(attributePaths = #["opciones"])
+	@EntityGraph(attributePaths = #["opciones", "autor"])
 	override Optional<Pregunta> findById(Long id)
 	
 	
