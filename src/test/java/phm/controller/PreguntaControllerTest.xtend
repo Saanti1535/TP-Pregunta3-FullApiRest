@@ -73,6 +73,8 @@ class PreguntaControllerTest {
 			.contentType(MediaType.APPLICATION_JSON)
 			.content('{"laRespuesta": "Opcion 3", "idUsuario": 2}')
 		)
+		.andExpect(status.isOk)
+		
 		//pep empieza con 55 y con registros de respuestas (el registro aumenta, los puntos quedan igual)
 		mockMvc
 		.perform(MockMvcRequestBuilders.get("/usuario/{id}", 2))
