@@ -42,7 +42,8 @@ class ControllerPregunta {
 	
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
 	def preguntaPorId(@PathVariable long id, @PathVariable long idUsuario) {
-			return preguntaService.getPreguntaPorId(id, idUsuario)
+			val pregunta = preguntaService.getPreguntaPorId(id, idUsuario)
+			return pregunta
 	}
 	
 	@Transactional

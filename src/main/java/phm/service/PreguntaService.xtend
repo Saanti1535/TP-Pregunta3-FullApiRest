@@ -56,6 +56,8 @@ class PreguntaService {
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
 			
+			pregunta.autor.id !== usuario.id ? pregunta.respuestaCorrecta = null
+			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				pregunta
 			}else{

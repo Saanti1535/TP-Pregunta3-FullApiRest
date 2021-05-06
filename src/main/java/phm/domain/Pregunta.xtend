@@ -66,12 +66,10 @@ abstract class Pregunta extends Entidad{
 		autor.id
 	}
 	
-	@JsonIgnore
 	def String getRespuestaCorrecta(){
 	   return respuestaCorrecta
 	}	
 	
-	@JsonProperty(access = Access.WRITE_ONLY)
 	def String setRespuestaCorrecta(String respuesta){
 	   respuestaCorrecta = respuesta
 	}	
