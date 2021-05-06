@@ -18,7 +18,7 @@ class UsuarioService {
 	def buscarPorUsernameYContrasenia(String username, String claveRecibida){
 		val usuario = repoUsuario.findByUsername(username)
 		validar(usuario, usuario.password, claveRecibida)
-		usuario
+		usuario.id
 	}
 	
 	def buscarPorId(Long id) {
@@ -45,6 +45,7 @@ class UsuarioService {
 		val usuarioOriginal = repoUsuario.findById(actualizado.id).orElse(null)
 		usuarioOriginal.update(actualizado)
 		repoUsuario.save(usuarioOriginal)
+		return usuarioOriginal
 	}
 	
 }

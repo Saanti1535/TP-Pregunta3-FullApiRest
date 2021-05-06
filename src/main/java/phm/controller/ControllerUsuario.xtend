@@ -24,10 +24,10 @@ class ControllerUsuario {
 	def loginUsuarioPorNombre(@RequestBody String password, @PathVariable String username) {
 
 		val String claveRecibida = Mapper.extraerStringDeJson(password, "password")
-		val Usuario usuario = usuarioService.buscarPorUsernameYContrasenia(username, claveRecibida)
-		val UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
+		val Long idUsuario = usuarioService.buscarPorUsernameYContrasenia(username, claveRecibida)
+		//val UsuarioDTO usuarioDTO = UsuarioDTO.fromUsuario(usuario)
 
-		return usuarioDTO
+		return idUsuario
 	}
 
 	@GetMapping("/usuarios/{id},{usernameABuscar}")
@@ -46,8 +46,7 @@ class ControllerUsuario {
 	@PutMapping("/actualizar/{id}")
 	def updateUsuarioPorId(@RequestBody String body, @PathVariable Long id) {
 		val usuario = Mapper.mapear.readValue(body, Usuario)
-		usuarioService.actualizar(usuario)
-		
+		return usuarioService.actualizar(usuario)
 	}
 
 }
