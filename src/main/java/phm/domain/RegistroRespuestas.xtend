@@ -1,15 +1,26 @@
-package phm
+package phm.domain
 
-import java.time.LocalDate
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.time.ZonedDateTime
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.format.DateTimeFormatter
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.Column
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 
 @Accessors
-class RegistroRespuestas extends Entidad{
+@Entity
+@Table(name="registro")
+class RegistroRespuestas extends Entidad {
+	
+	@Column(length=255)
 	String pregunta
+	
+	@Column(columnDefinition = "TIMESTAMP")
 	ZonedDateTime fechaRespuesta
+	
 	float puntosOtorgados
 	
 	@JsonProperty("fechaRespuesta")

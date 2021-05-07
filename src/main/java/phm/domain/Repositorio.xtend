@@ -1,4 +1,4 @@
-package phm
+package phm.domain
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
