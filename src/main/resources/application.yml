@@ -13,4 +13,12 @@ spring:
       hibernate: 
         format_sql: true
     show-sql: true
-
+  data:
+       mongodb:
+         database: pregunta3
+         host: localhost
+         port: 27017
+         repositories:
+           enabled: true
+  main:
+    allow-bean-definition-overriding: true
