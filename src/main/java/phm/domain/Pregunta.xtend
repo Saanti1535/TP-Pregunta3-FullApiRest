@@ -11,18 +11,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.DiscriminatorValue
 import java.time.ZonedDateTime
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.annotation.Id
 
 @Accessors
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
-@JsonSubTypes( 
-	@JsonSubTypes.Type(name = "preguntaSimple", value = PreguntaSimple), 
-	@JsonSubTypes.Type(name = "preguntaRiesgosa", value = PreguntaRiesgosa), 
-	@JsonSubTypes.Type(name = "preguntaSolidaria", value = PreguntaSolidaria)
-)
 @Document(collection="preguntas")
-abstract class Pregunta extends Entidad{
+abstract class Pregunta{
 	public static final long minutosDeVigencia = 5
+	
+	@Id	
+	@Accessors String id
+	
+	@JsonIgnore
+	@Accessors boolean bajaLogica = false	
 	
 	@Accessors var String pregunta
 	
@@ -85,8 +85,6 @@ abstract class Pregunta extends Entidad{
 }
 
 @Accessors
-@DiscriminatorValue("1")
-@JsonTypeName("preguntaSimple")
 class PreguntaSimple extends Pregunta{
 	final String type = "preguntaSimple"
 	@Accessors(PUBLIC_GETTER) static final float puntos = 10
@@ -105,8 +103,6 @@ class PreguntaSimple extends Pregunta{
 }
 
 @Accessors
-@DiscriminatorValue("2")
-@JsonTypeName("preguntaRiesgosa")
 class PreguntaRiesgosa extends Pregunta{
 	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
@@ -134,8 +130,6 @@ class PreguntaRiesgosa extends Pregunta{
 }
 
 @Accessors
-@DiscriminatorValue("3")
-@JsonTypeName("preguntaSolidaria")
 class PreguntaSolidaria extends Pregunta{
 	final String type = "preguntaSolidria"
 	@Accessors(PUBLIC_GETTER) float puntos

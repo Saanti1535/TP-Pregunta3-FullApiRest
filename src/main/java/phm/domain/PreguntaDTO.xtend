@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull
 
 @Accessors
 class PreguntaDTO {
-  Long id
+  String id
   String pregunta
   Long idAutor
   boolean activa

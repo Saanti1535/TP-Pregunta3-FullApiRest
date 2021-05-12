@@ -22,3 +22,4 @@ spring:
            enabled: true
   main:
     allow-bean-definition-overriding: true
+    lazy-initialization: true
