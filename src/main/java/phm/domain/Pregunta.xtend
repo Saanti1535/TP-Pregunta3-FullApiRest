@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.DiscriminatorValue
 import java.time.ZonedDateTime
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.annotation.Id
+import java.time.LocalDate
+import org.springframework.data.annotation.Transient
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,17 +24,23 @@ import org.springframework.data.mongodb.core.mapping.Document
 	@JsonSubTypes.Type(name = "preguntaSolidaria", value = PreguntaSolidaria)
 )
 @Document(collection="preguntas")
-abstract class Pregunta extends Entidad{
+abstract class Pregunta{
 	public static final long minutosDeVigencia = 5
+	@Id	
+	@Accessors String id
 	
+	@JsonIgnore
+	@Accessors boolean bajaLogica = false
+		
 	@Accessors var String pregunta
 	
 	var String respuestaCorrecta
 	
 	var List<String> opciones = newArrayList
 	
-	@Accessors var ZonedDateTime fechaHoraDeCreacion = ZonedDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	@Accessors var LocalDate fechaHoraDeCreacion = LocalDate.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	
+	@Transient
 	@JsonIgnore
 	@Accessors var Usuario autor
 	
@@ -55,8 +64,8 @@ abstract class Pregunta extends Entidad{
 	}
 	
 	def boolean estaActiva(){
-		var ZonedDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
-		ZonedDateTime.now().isBefore(vencimiento)
+		var LocalDate vencimiento = fechaHoraDeCreacion
+		LocalDate.now().isBefore(vencimiento)
 	}
 	
 	def boolean esRespuestaCorrecta(String respuesta){
@@ -128,8 +137,8 @@ class PreguntaRiesgosa extends Pregunta{
 	}
 	
 	def boolean esRespuestaRapida(){
-		var ZonedDateTime tiempoLimite = fechaHoraDeCreacion.plusMinutes(minutosDeRiesgo)
-		ZonedDateTime.now().isBefore(tiempoLimite)
+		var LocalDate tiempoLimite = fechaHoraDeCreacion
+		LocalDate.now().isBefore(tiempoLimite)
 	}
 }
 
