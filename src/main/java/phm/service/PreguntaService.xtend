@@ -27,9 +27,6 @@ class PreguntaService {
 	@Autowired
 	UsuarioService usuarioService
 	
-	@Autowired
-	SequenceGeneratorService sequenceGeneratorService
-	
 	def getTodasLasPreguntasDTO(){
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
@@ -47,19 +44,22 @@ class PreguntaService {
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
 	}
 	
-	def getPreguntaPorId(long idPregunta, long idUsuario){
+	def getPreguntaPorId(String idPregunta, long idUsuario){
 			var Pregunta pregunta
 			try{
 				pregunta = repoPregunta.findById(idPregunta).orElse(null)
+				System.out.println(pregunta)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
+			var Usuario autor = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
 			
-			pregunta.autor.id !== usuario.id ? pregunta.respuestaCorrecta = null
+			pregunta.autor = autor
+			pregunta.idAutor !== usuario.id ? pregunta.respuestaCorrecta = null
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				pregunta
@@ -69,7 +69,7 @@ class PreguntaService {
 		
 	}
 	
-	def verificarRespuesta(String laRespuesta, long idPregunta, long idUsuario){
+	def verificarRespuesta(String laRespuesta, String idPregunta, long idUsuario){
 			
 
 			var pregunta = repoPregunta.findById(idPregunta).get()
@@ -97,27 +97,25 @@ class PreguntaService {
 	}
 	
 	@Transactional
-	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, long idPregunta){
-			
-			repoPregunta.findById(idPregunta).map[pregunta | 
-				pregunta => [ 
-					opciones = updatePregunta.opciones
-					respuestaCorrecta = updatePregunta.respuestaCorrecta
-				]
-				repoPregunta.save(pregunta)
-			].orElseThrow([
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw 
-			])
+	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, String idPregunta) {
+		repoPregunta.findById(idPregunta).map [ pregunta |
+			pregunta => [
+				opciones = updatePregunta.opciones
+				respuestaCorrecta = updatePregunta.respuestaCorrecta
+			]
+			repoPregunta.save(pregunta)
+			throw new Exception("se guardo bien????")
+		].orElseThrow([
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw 
+		])
 	}
 	
 	@Transactional
-	def void crearPregunta(@Valid Pregunta nuevaPregunta, long idAutor, int puntos){
-			nuevaPregunta.autor = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(idAutor).orElse(null)
+	def void crearPregunta(@Valid Pregunta nuevaPregunta, int puntos){
+			nuevaPregunta.autor = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(nuevaPregunta.idAutor).orElse(null)
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}
-			// Genera el id con el sequenceGenerator antes de persistirla
-			nuevaPregunta.id = sequenceGeneratorService.generateSequence(Pregunta.SEQUENCE_NAME).toString()
 			repoPregunta.save(nuevaPregunta)
 	}
 	

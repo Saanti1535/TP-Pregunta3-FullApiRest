@@ -18,7 +18,7 @@ class PreguntaDTO {
     new PreguntaDTO => [
       id = pregunta.id
       pregunta = pregunta.pregunta
-      idAutor = pregunta.getIdAutor()
+      idAutor = pregunta.idAutor
       activa = pregunta.estaActiva
     ]
   }

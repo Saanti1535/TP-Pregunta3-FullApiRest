@@ -3,19 +3,15 @@ package phm.repository
 import phm.domain.Pregunta
 import org.springframework.stereotype.Repository
 import java.util.List
-import java.util.Optional
 import org.springframework.data.repository.query.Param
 import java.time.ZonedDateTime
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 
-
 @Repository
-interface PreguntaRepository extends MongoRepository<Pregunta, Long> {
+interface PreguntaRepository extends MongoRepository<Pregunta, String> {
 	
 	def Pregunta findByPregunta(String pregunta)
-	
-	override Optional<Pregunta> findById(Long id)
 	
 	def List<Pregunta> findByPreguntaContaining(String busqueda)
 	

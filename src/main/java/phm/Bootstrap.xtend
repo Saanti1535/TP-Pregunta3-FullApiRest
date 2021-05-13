@@ -1,6 +1,6 @@
 package phm
 
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.time.ZoneId
 import phm.domain.Usuario
 import phm.domain.PreguntaSimple
@@ -14,6 +14,7 @@ import phm.repository.PreguntaRepository
 import phm.domain.Pregunta
 import org.springframework.beans.factory.InitializingBean
 import phm.repository.RegistroRespuestasRepository
+import java.time.ZonedDateTime
 
 @Service
 class Bootstrap implements InitializingBean{
@@ -62,125 +63,117 @@ class Bootstrap implements InitializingBean{
 	]
 
 	var pregunta01 = new PreguntaSimple => [
-		id = '1';
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = liliana;
+		idAutor = 1
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta02 = new PreguntaSimple => [
-		id = '2';
 		pregunta = "¿Cuál es el río más largo del mundo?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = liliana;
+		idAutor = 1
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta03 = new PreguntaSimple => [
-		id = '3';
 		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = jose;
+		idAutor = 3
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta04 = new PreguntaRiesgosa => [
-		id = '4';
 		pregunta = "¿En qué continente está Ecuador?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = pep;
+		idAutor = 2
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta05 = new PreguntaRiesgosa => [
-		id = '5';
 		pregunta = "¿Dónde originaron los juegos olímpicos?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = pep;
+		idAutor = 2
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta06 = new PreguntaRiesgosa => [
-		id = '6';
 		pregunta = "¿Qué tipo de animal es la ballena?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = jose;
+		idAutor = 3
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta07 = new PreguntaSolidaria => [
-		id = '7';
 		pregunta = "¿De qué colores es la bandera de México?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = juana;
+		idAutor = 4
 		respuestaCorrecta = "Opcion 2"
 	]
 	
 	var pregunta08 = new PreguntaSolidaria => [
-		id = '8';
 		pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
-		autor = juana;
+		idAutor = 4
 		respuestaCorrecta = "Opcion 2"
 	]
 
 	var registroPep01 = new RegistroRespuestas => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
-		fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 3, 25, 17, 4, 15, 0);
 		puntosOtorgados = 10
 	]
 	
 	var registroPep02 = new RegistroRespuestas => [
 		pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";
-		fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 3, 25, 17, 4, 15, 0);
 		puntosOtorgados = 15
 	]
 	
 	var registroPep03 = new RegistroRespuestas => [
 		pregunta = "¿De qué colores es la bandera de México?";
-		fechaRespuesta = ZonedDateTime.of(2021, 3, 25, 17, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 3, 25, 17, 4, 15, 0);
 		puntosOtorgados = 30
 	]
 
 	var registroJuana01 = new RegistroRespuestas => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 12, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 12, 4, 15, 0);
 		puntosOtorgados = 10
 	]
 	var registroJuana02 = new RegistroRespuestas => [
 		pregunta = "¿Dónde originaron los juegos olímpicos?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 15, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 15, 4, 15, 0);
 		puntosOtorgados = 100
 	]
 	
 	var registroJuana03 = new RegistroRespuestas => [
 		pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 19, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 19, 4, 15, 0);
 		puntosOtorgados = 15
 	]
 	
 	var registroJuana04 = new RegistroRespuestas => [
 		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
-		fechaRespuesta = ZonedDateTime.of(2021, 2, 20, 19, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 2, 20, 19, 4, 15, 0);
 		puntosOtorgados = 15
 	]
 
 	var registroJose01 = new RegistroRespuestas => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 12, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 12, 4, 15, 0);
 		puntosOtorgados = 10
 	]
 	
 	var registroJose02 = new RegistroRespuestas => [
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 15, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 15, 4, 15, 0);
 		puntosOtorgados = 10
 	]
 	
 	var registroJose03 = new RegistroRespuestas => [
 		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
-		fechaRespuesta = ZonedDateTime.of(2021, 5, 20, 19, 4, 15, 0, ZoneId.of("GMT-3"));
+		fechaRespuesta = LocalDateTime.of(2021, 5, 20, 19, 4, 15, 0);
 		puntosOtorgados = 10
 	]
 
@@ -197,6 +190,7 @@ class Bootstrap implements InitializingBean{
 	}
 	
 	def initPreguntas(){ 
+		repoPreguntas.deleteAll()
 		asignarPuntos()
 		crearPregunta(pregunta01)
 		crearPregunta(pregunta02)

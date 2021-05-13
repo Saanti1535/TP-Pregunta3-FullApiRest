@@ -9,11 +9,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
 import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.DiscriminatorValue
-import java.time.ZonedDateTime
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.annotation.Id
-import java.time.LocalDate
 import org.springframework.data.annotation.Transient
+import java.time.LocalDateTime
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,10 +26,9 @@ import org.springframework.data.annotation.Transient
 abstract class Pregunta{
 	
 	@Transient
-    public static final String SEQUENCE_NAME = "users_sequence";
-    
 	public static final long minutosDeVigencia = 5
-	@Id	
+	
+	@Id
 	@Accessors String id
 	
 	@JsonIgnore
@@ -42,16 +40,13 @@ abstract class Pregunta{
 	
 	var List<String> opciones = newArrayList
 	
-	@Accessors var LocalDate fechaHoraDeCreacion = LocalDate.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
+	@Accessors var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now() //Fecha y hora juntos, sirve para hacer mas simple la comparacion
 	
 	@Transient
 	@JsonIgnore
 	@Accessors var Usuario autor
 	
-	@JsonProperty("idAutor")
-	def getIdAutor(){
-		autor.id
-	}
+	var long idAutor 
 	
 	def String getRespuestaCorrecta(){
 	   return respuestaCorrecta
@@ -68,8 +63,8 @@ abstract class Pregunta{
 	}
 	
 	def boolean estaActiva(){
-		var LocalDate vencimiento = fechaHoraDeCreacion
-		LocalDate.now().isBefore(vencimiento)
+		var LocalDateTime vencimiento = fechaHoraDeCreacion.plusMinutes(minutosDeVigencia)
+		LocalDateTime.now().isBefore(vencimiento)
 	}
 	
 	def boolean esRespuestaCorrecta(String respuesta){
@@ -85,7 +80,7 @@ abstract class Pregunta{
 	def void modificarHistorial(Usuario participante, float puntos){
 		var RegistroRespuestas registro = new RegistroRespuestas()
 		registro.pregunta = pregunta
-		registro.fechaRespuesta = ZonedDateTime.now()
+		registro.fechaRespuesta = LocalDateTime.now()
 		registro.puntosOtorgados = puntos
 		
 		participante.historial.add(registro)
@@ -102,7 +97,7 @@ abstract class Pregunta{
 @JsonTypeName("preguntaSimple")
 @Document(collection="preguntas")
 class PreguntaSimple extends Pregunta{
-	final String type = "preguntaSimple"
+//	final String type = "preguntaSimple"
 	@Accessors(PUBLIC_GETTER) static final float puntos = 10
 	
 	@JsonProperty("puntos")
@@ -123,7 +118,7 @@ class PreguntaSimple extends Pregunta{
 @JsonTypeName("preguntaRiesgosa")
 @Document(collection="preguntas")
 class PreguntaRiesgosa extends Pregunta{
-	final String type = "preguntaRiesgosa"
+//	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
 	@Accessors(PUBLIC_GETTER) static final float puntos = 100
 	static final float puntosEnRiesgo = 50
@@ -143,8 +138,8 @@ class PreguntaRiesgosa extends Pregunta{
 	}
 	
 	def boolean esRespuestaRapida(){
-		var LocalDate tiempoLimite = fechaHoraDeCreacion
-		LocalDate.now().isBefore(tiempoLimite)
+		var LocalDateTime tiempoLimite = fechaHoraDeCreacion
+		LocalDateTime.now().isBefore(tiempoLimite)
 	}
 }
 
@@ -153,7 +148,7 @@ class PreguntaRiesgosa extends Pregunta{
 @JsonTypeName("preguntaSolidaria")
 @Document(collection="preguntas")
 class PreguntaSolidaria extends Pregunta{
-	final String type = "preguntaSolidria"
+//	final String type = "preguntaSolidria"
 	@Accessors(PUBLIC_GETTER) float puntos
 	
 	@JsonProperty("puntos")
