@@ -64,7 +64,7 @@ class RepositorioUsuarios extends Repositorio<Usuario>{
 
 
 
-/*class RepositorioPreguntas extends Repositorio<Pregunta>{
+class RepositorioPreguntas extends Repositorio<Pregunta>{
 	static RepositorioPreguntas repositorioPreguntas
 	
 	private new(){}
@@ -106,4 +106,4 @@ class RepositorioHistoriales extends Repositorio<RegistroRespuestas>{
 		}
 		repositorioHistoriales
 	}
-}*/
+}
