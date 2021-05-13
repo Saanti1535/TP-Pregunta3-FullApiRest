@@ -27,6 +27,9 @@ class PreguntaService {
 	@Autowired
 	UsuarioService usuarioService
 	
+	@Autowired
+	SequenceGeneratorService sequenceGeneratorService
+	
 	def getTodasLasPreguntasDTO(){
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
@@ -113,6 +116,8 @@ class PreguntaService {
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}
+			// Genera el id con el sequenceGenerator antes de persistirla
+			nuevaPregunta.id = sequenceGeneratorService.generateSequence(Pregunta.SEQUENCE_NAME).toString()
 			repoPregunta.save(nuevaPregunta)
 	}
 	

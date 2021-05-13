@@ -62,6 +62,7 @@ class Bootstrap implements InitializingBean{
 	]
 
 	var pregunta01 = new PreguntaSimple => [
+		id = '1';
 		pregunta = "¿Cuál es el lugar más frío de la tierra?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = liliana;
@@ -69,6 +70,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta02 = new PreguntaSimple => [
+		id = '2';
 		pregunta = "¿Cuál es el río más largo del mundo?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = liliana;
@@ -76,6 +78,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta03 = new PreguntaSimple => [
+		id = '3';
 		pregunta = "¿Cómo se llama la Reina del Reino Unido?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = jose;
@@ -83,6 +86,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta04 = new PreguntaRiesgosa => [
+		id = '4';
 		pregunta = "¿En qué continente está Ecuador?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = pep;
@@ -90,6 +94,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta05 = new PreguntaRiesgosa => [
+		id = '5';
 		pregunta = "¿Dónde originaron los juegos olímpicos?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = pep;
@@ -97,6 +102,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta06 = new PreguntaRiesgosa => [
+		id = '6';
 		pregunta = "¿Qué tipo de animal es la ballena?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = jose;
@@ -104,6 +110,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta07 = new PreguntaSolidaria => [
+		id = '7';
 		pregunta = "¿De qué colores es la bandera de México?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = juana;
@@ -111,6 +118,7 @@ class Bootstrap implements InitializingBean{
 	]
 	
 	var pregunta08 = new PreguntaSolidaria => [
+		id = '8';
 		pregunta = "¿Qué cantidad de huesos en el cuerpo humano?";
 		opciones = #["Opcion 1", "Opcion 2", "Opcion 3"];
 		autor = juana;

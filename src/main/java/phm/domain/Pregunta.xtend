@@ -25,6 +25,10 @@ import org.springframework.data.annotation.Transient
 )
 @Document(collection="preguntas")
 abstract class Pregunta{
+	
+	@Transient
+    public static final String SEQUENCE_NAME = "users_sequence";
+    
 	public static final long minutosDeVigencia = 5
 	@Id	
 	@Accessors String id
@@ -96,6 +100,7 @@ abstract class Pregunta{
 @Accessors
 @DiscriminatorValue("1")
 @JsonTypeName("preguntaSimple")
+@Document(collection="preguntas")
 class PreguntaSimple extends Pregunta{
 	final String type = "preguntaSimple"
 	@Accessors(PUBLIC_GETTER) static final float puntos = 10
@@ -116,6 +121,7 @@ class PreguntaSimple extends Pregunta{
 @Accessors
 @DiscriminatorValue("2")
 @JsonTypeName("preguntaRiesgosa")
+@Document(collection="preguntas")
 class PreguntaRiesgosa extends Pregunta{
 	final String type = "preguntaRiesgosa"
 	static final long minutosDeRiesgo = 1
@@ -145,6 +151,7 @@ class PreguntaRiesgosa extends Pregunta{
 @Accessors
 @DiscriminatorValue("3")
 @JsonTypeName("preguntaSolidaria")
+@Document(collection="preguntas")
 class PreguntaSolidaria extends Pregunta{
 	final String type = "preguntaSolidria"
 	@Accessors(PUBLIC_GETTER) float puntos
