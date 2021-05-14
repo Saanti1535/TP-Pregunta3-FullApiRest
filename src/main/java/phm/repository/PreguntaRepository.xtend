@@ -3,11 +3,10 @@ package phm.repository
 import phm.domain.Pregunta
 import org.springframework.stereotype.Repository
 import java.util.List
-import org.springframework.data.repository.query.Param
-import java.time.ZonedDateTime
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.bson.types.ObjectId
+import java.time.LocalDateTime
 
 @Repository
 interface PreguntaRepository extends MongoRepository<Pregunta, String> {
@@ -18,8 +17,8 @@ interface PreguntaRepository extends MongoRepository<Pregunta, String> {
 	
 	def List<Pregunta> findByPreguntaContaining(String busqueda)
 	
-	@Query("SELECT p FROM Pregunta p")
-	def List<Pregunta> obtenerPreguntasFiltradasActivas(@Param("busqueda") String busqueda, @Param("fechaDesdeParaQueEstenActivas") ZonedDateTime fechaDesdeParaQueEstenActivas)
+	@Query("{ 'pregunta' : { $regex: ?0 } , 'fechaHoraDeCreacion' : { $gt: ?1 }}")
+	def List<Pregunta> obtenerPreguntasFiltradasActivas(String busqueda, LocalDateTime fechaDesdeParaQueEstenActivas)
 }
 
 

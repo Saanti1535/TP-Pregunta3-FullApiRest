@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
 import javax.transaction.Transactional
-import java.time.ZonedDateTime
 import org.bson.types.ObjectId
+import java.time.LocalDateTime
 
 @Service
 @Validated
@@ -35,7 +35,7 @@ class PreguntaService {
 	def getPreguntasFiltradas(String busqueda, boolean soloActivas){
 			var Pregunta[] preguntas
 			var int minutosDeVigencia = Pregunta.minutosDeVigencia as int
-			var fechaDesdeParaQueEstenActivas = ZonedDateTime.now().minusMinutes(minutosDeVigencia)
+			var fechaDesdeParaQueEstenActivas = LocalDateTime.now().minusMinutes(minutosDeVigencia)
 			
 			
 			if(soloActivas){
