@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
 import javax.transaction.Transactional
 import java.time.ZonedDateTime
+import org.bson.types.ObjectId
 
 @Service
 @Validated
@@ -44,10 +45,10 @@ class PreguntaService {
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
 	}
 	
-	def getPreguntaPorId(String idPregunta, long idUsuario){
+	def getPreguntaPorId(ObjectId idPregunta, long idUsuario){
 			var Pregunta pregunta
 			try{
-				pregunta = repoPregunta.findById(idPregunta).orElse(null)
+				pregunta = repoPregunta.findBy_id(idPregunta)
 				System.out.println(pregunta)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
@@ -98,16 +99,17 @@ class PreguntaService {
 	
 	@Transactional
 	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, String idPregunta) {
-		repoPregunta.findById(idPregunta).map [ pregunta |
-			pregunta => [
-				opciones = updatePregunta.opciones
-				respuestaCorrecta = updatePregunta.respuestaCorrecta
-			]
+		try{
+		val _id=new ObjectId(idPregunta)
+		var pregunta = repoPregunta.findBy_id(_id)
+			pregunta.opciones = updatePregunta.opciones
+			pregunta.respuestaCorrecta = updatePregunta.respuestaCorrecta
+			
 			repoPregunta.save(pregunta)
-			throw new Exception("se guardo bien????")
-		].orElseThrow([
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw 
-		])
+		}catch (Exception e){
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw			
+		}
+ 
 	}
 	
 	@Transactional

@@ -14,6 +14,7 @@ import javax.transaction.Transactional
 import phm.service.PreguntaService
 import phm.domain.UpdatePregunta
 import phm.domain.Pregunta
+import org.bson.types.ObjectId
 
 @RestController
 @CrossOrigin
@@ -41,7 +42,8 @@ class ControllerPregunta {
 	
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
 	def preguntaPorId(@PathVariable String id, @PathVariable long idUsuario) {
-			val pregunta = preguntaService.getPreguntaPorId(id, idUsuario)
+			val _id = new ObjectId(id)
+			val pregunta = preguntaService.getPreguntaPorId(_id, idUsuario)
 			return pregunta
 	}
 	

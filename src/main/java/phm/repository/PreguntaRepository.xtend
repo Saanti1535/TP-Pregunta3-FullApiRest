@@ -7,9 +7,12 @@ import org.springframework.data.repository.query.Param
 import java.time.ZonedDateTime
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
+import org.bson.types.ObjectId
 
 @Repository
 interface PreguntaRepository extends MongoRepository<Pregunta, String> {
+	
+	def Pregunta findBy_id(ObjectId _id)
 	
 	def Pregunta findByPregunta(String pregunta)
 	

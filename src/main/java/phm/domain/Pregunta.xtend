@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import java.time.LocalDateTime
+import org.bson.types.ObjectId
 
 @Accessors
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -29,7 +30,12 @@ abstract class Pregunta{
 	public static final long minutosDeVigencia = 5
 	
 	@Id
-	@Accessors String id
+	@Accessors ObjectId _id
+	
+	@JsonProperty("_id")
+	def get_id(){
+		return _id.toString()
+	}
 	
 	@JsonIgnore
 	@Accessors boolean bajaLogica = false
@@ -138,7 +144,7 @@ class PreguntaRiesgosa extends Pregunta{
 	}
 	
 	def boolean esRespuestaRapida(){
-		var LocalDateTime tiempoLimite = fechaHoraDeCreacion
+		var LocalDateTime tiempoLimite = fechaHoraDeCreacion.plusMinutes(minutosDeRiesgo)
 		LocalDateTime.now().isBefore(tiempoLimite)
 	}
 }
