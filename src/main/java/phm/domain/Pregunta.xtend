@@ -37,6 +37,10 @@ abstract class Pregunta{
 		return _id.toString()
 	}
 	
+	def getObjectId(){
+		_id
+	}
+	
 	@JsonIgnore
 	@Accessors boolean bajaLogica = false
 		

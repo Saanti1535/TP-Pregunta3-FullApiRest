@@ -28,6 +28,9 @@ class PreguntaService {
 	@Autowired
 	UsuarioService usuarioService
 	
+	@Autowired
+	LogService logService
+	
 	def getTodasLasPreguntasDTO(){
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
@@ -71,8 +74,6 @@ class PreguntaService {
 	}
 	
 	def verificarRespuesta(String laRespuesta, String idPregunta, long idUsuario){
-			
-
 			var pregunta = repoPregunta.findById(idPregunta).get()
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
@@ -100,12 +101,16 @@ class PreguntaService {
 	@Transactional
 	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, String idPregunta) {
 		try{
-		val _id=new ObjectId(idPregunta)
-		var pregunta = repoPregunta.findBy_id(_id)
-			pregunta.opciones = updatePregunta.opciones
-			pregunta.respuestaCorrecta = updatePregunta.respuestaCorrecta
+		val _id = new ObjectId(idPregunta)
+		//Ver doble query vs mapear a mano los atributos que necesitamos conservar para la copia de la pregunta anterior
+		var preguntaAnterior = repoPregunta.findBy_id(_id)
+		var preguntaActualizada = repoPregunta.findBy_id(_id)
+
+			preguntaActualizada.opciones = updatePregunta.opciones
+			preguntaActualizada.respuestaCorrecta = updatePregunta.respuestaCorrecta
 			
-			repoPregunta.save(pregunta)
+			repoPregunta.save(preguntaActualizada)
+			logService.agregarRegistro(preguntaAnterior, preguntaActualizada)
 		}catch (Exception e){
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw			
 		}
