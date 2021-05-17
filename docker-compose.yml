@@ -1,16 +1,67 @@
-version: '3'
-services:
-  mongodb_container:
-    container_name: mongo
-    image: mongo:latest
-    ports:
-      - 27017:27017
-    expose:
-      - 27017
-    restart: "no"
-    command: ["/usr/bin/mongod", "--bind_ip_all", "--port", "27017"]
-    volumes:
-      - mongodb_data_container:/data/db
+version: "3.7"
 
-volumes:
-  mongodb_data_container:
+services:
+  ## Config Servers
+  config01:
+    image: mongo:latest
+    command: mongod --port 27017 --configsvr --replSet configserver   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+  config02:
+    image: mongo:latest
+    command: mongod --port 27017 --configsvr --replSet configserver   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+
+  ## Shards
+  shard01a:
+    image: mongo:latest
+    command: mongod --port 27018 --shardsvr --replSet shard01   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+  shard01b:
+    image: mongo:latest
+    command: mongod --port 27018 --shardsvr --replSet shard01   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+  shard02a:
+    image: mongo:latest
+    command: mongod --port 27019 --shardsvr --replSet shard02   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+  shard02b:
+    image: mongo:latest
+    command: mongod --port 27019 --shardsvr --replSet shard02   --oplogSize 16
+    volumes:
+      - ./scripts:/scripts
+
+  ## Router
+  router:
+    image: mongo:latest
+    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017 --bind_ip_all
+    ports:
+      - "27001:27017"
+    volumes:
+      - ./scripts:/scripts
+    depends_on:
+      - config01
+      - config02
+      - shard01a
+      - shard01b
+      - shard02a
+      - shard02b
+
+  docker-hoster:
+    image: dvdarias/docker-hoster
+    depends_on:
+      - config01
+      - config02
+      - shard01a
+      - shard01b
+      - shard02a
+      - shard02b
+      - router
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
+
