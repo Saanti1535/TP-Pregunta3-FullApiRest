@@ -14,23 +14,22 @@ class LogModificaciones {
 	
 	@Id
 	var ObjectId id
-	
 	var long idUsuario
 	var ObjectId idPregunta
-	var LocalDateTime fechaHoraDeCreacion = LocalDateTime.now()
-	
-	var String preguntaAnterior
+	var String pregunta
+	var LocalDateTime fechaHoraDeModificacion = LocalDateTime.now()
 	var List<String> opcionesAnteriores = newArrayList
-
-	var String preguntaNueva
 	var List<String> opcionesNuevas = newArrayList
+	var String opcionCorrectaAnterior
+	var String opcionCorrectaActual
 	
-	new(Pregunta preguntaAnterior, Pregunta preguntaNueva){
+	def void cargarDatos(Pregunta preguntaAnterior, Pregunta preguntaNueva){
+		this.pregunta = preguntaAnterior.pregunta
 		this.idUsuario = preguntaAnterior.idAutor
 		this.idPregunta = preguntaAnterior.getObjectId
-		this.preguntaAnterior = preguntaAnterior.pregunta
 		this.opcionesAnteriores = preguntaAnterior.opciones
-		this.preguntaNueva = preguntaNueva.pregunta
 		this.opcionesNuevas = preguntaNueva.opciones
+		this.opcionCorrectaAnterior = preguntaAnterior.respuestaCorrecta
+		this.opcionCorrectaActual = preguntaNueva.respuestaCorrecta
 	}
 }

@@ -5,6 +5,7 @@ import phm.domain.Pregunta
 import org.springframework.beans.factory.annotation.Autowired
 import phm.repository.LogRepository
 import phm.domain.LogModificaciones
+import java.util.List
 
 @Service
 class LogService {
@@ -12,8 +13,13 @@ class LogService {
 	@Autowired
 	LogRepository repoLog
 	
+	def List<LogModificaciones> obtener(Long idUsuario) {
+		return repoLog.findByIdUsuario(idUsuario)
+	}
+	
 	def agregarRegistro(Pregunta preguntaAnterior, Pregunta preguntaNueva) {
-		var registro = new LogModificaciones(preguntaAnterior, preguntaNueva)
+		val registro = new LogModificaciones()
+		registro.cargarDatos(preguntaAnterior, preguntaNueva)
 		repoLog.save(registro)
 	}
 	
