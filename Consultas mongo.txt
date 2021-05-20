@@ -9,3 +9,10 @@ db.preguntas.find({
 }).count();
 
 --------------------------------------------------------------------------
+Consulta 3:  Saber qué preguntas están habilitadas para responder a partir de una determinada fecha.
+
+{fecha="2021-05-19"
+hora="03:55:00"
+inicio = ISODate(fecha+"T"+hora+"Z")
+fin = new Date(inicio.getTime() + 1000*60*5)
+db.preguntas.find({"$and" : [{"fechaHoraDeCreacion" : {"$gte" : inicio}}, {"fechaHoraDeCreacion" : {"$lt" : fin}}]})}
