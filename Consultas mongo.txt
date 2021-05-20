@@ -1,0 +1,11 @@
+--------------------------------------------------------------------------
+Consulta 2: saber cuantas preguntas de un año determinado son solidarias
+
+db.preguntas.find({
+  $and: [
+    { $expr: {$eq: ["$_class", "phm.domain.PreguntaSolidaria"]} },
+    { $expr: {$eq: [{$year: "$fechaHoraDeCreacion"}, 2021]} }
+  ]
+}).count();
+
+--------------------------------------------------------------------------
