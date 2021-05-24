@@ -197,6 +197,7 @@ class Bootstrap implements InitializingBean{
 	
 	def initPreguntas(){		
 		repoPreguntas.deleteAll()
+		repoPreguntasActivas.deleteAll()
 		asignarPuntos()
 		crearPregunta(pregunta01)
 		crearPregunta(pregunta02)
@@ -268,12 +269,7 @@ class Bootstrap implements InitializingBean{
 			initPreguntas()
 			val todasLasPreguntas = preguntaService.getTodasLasPreguntasDTO()
 			todasLasPreguntas.forEach[pregunta | repoPreguntasActivas.save(pregunta)]	
-		}else{
-				initPreguntas()
-			
-		}
-			
-			
+		}	
 	}
 	
 	def boolean datosNoCargados(){
