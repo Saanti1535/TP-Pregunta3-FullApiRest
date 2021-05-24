@@ -4,9 +4,13 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
 import javax.validation.constraints.Size
 import javax.validation.constraints.NotNull
+import org.springframework.data.annotation.Id
+import org.springframework.data.redis.core.RedisHash
 
 @Accessors
+@RedisHash("PreguntaActiva")
 class PreguntaDTO {
+  @Id
   String _id
   String pregunta
   Long idAutor

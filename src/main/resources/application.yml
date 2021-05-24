@@ -19,5 +19,11 @@ spring:
          port: 27001
          repositories:
            enabled: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 50000
+
   main:
     allow-bean-definition-overriding: true
