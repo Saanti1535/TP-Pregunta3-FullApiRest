@@ -15,7 +15,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
 import javax.transaction.Transactional
-import java.time.ZonedDateTime
+import org.bson.types.ObjectId
+import java.time.LocalDateTime
 
 @Service
 @Validated
@@ -27,6 +28,9 @@ class PreguntaService {
 	@Autowired
 	UsuarioService usuarioService
 	
+	@Autowired
+	LogService logService
+	
 	def getTodasLasPreguntasDTO(){
 		return repoPregunta.findAll().toList.map [ PreguntaDTO.fromPregunta(it) ]
 	}
@@ -34,7 +38,7 @@ class PreguntaService {
 	def getPreguntasFiltradas(String busqueda, boolean soloActivas){
 			var Pregunta[] preguntas
 			var int minutosDeVigencia = Pregunta.minutosDeVigencia as int
-			var fechaDesdeParaQueEstenActivas = ZonedDateTime.now().minusMinutes(minutosDeVigencia)
+			var fechaDesdeParaQueEstenActivas = LocalDateTime.now().minusMinutes(minutosDeVigencia)
 			
 			
 			if(soloActivas){
@@ -44,19 +48,22 @@ class PreguntaService {
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
 	}
 	
-	def getPreguntaPorId(long idPregunta, long idUsuario){
+	def getPreguntaPorId(ObjectId idPregunta, long idUsuario){
 			var Pregunta pregunta
 			try{
-				pregunta = repoPregunta.findById(idPregunta).orElse(null)
+				pregunta = repoPregunta.findBy_id(idPregunta)
+				System.out.println(pregunta)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
+			var Usuario autor = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
 			
-			pregunta.autor.id !== usuario.id ? pregunta.respuestaCorrecta = null
+			pregunta.autor = autor
+			pregunta.idAutor !== usuario.id ? pregunta.respuestaCorrecta = null
 			
 			if(!usuario.yaRespondio(pregunta.pregunta)){
 				pregunta
@@ -66,9 +73,7 @@ class PreguntaService {
 		
 	}
 	
-	def verificarRespuesta(String laRespuesta, long idPregunta, long idUsuario){
-			
-
+	def verificarRespuesta(String laRespuesta, String idPregunta, long idUsuario){
 			var pregunta = repoPregunta.findById(idPregunta).get()
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
@@ -94,22 +99,27 @@ class PreguntaService {
 	}
 	
 	@Transactional
-	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, long idPregunta){
+	def updatePreguntaById(@Valid UpdatePregunta updatePregunta, String idPregunta) {
+		try{
+		val _id = new ObjectId(idPregunta)
+		//Ver doble query vs mapear a mano los atributos que necesitamos conservar para la copia de la pregunta anterior
+		var preguntaAnterior = repoPregunta.findBy_id(_id)
+		var preguntaActualizada = repoPregunta.findBy_id(_id)
+
+			preguntaActualizada.opciones = updatePregunta.opciones
+			preguntaActualizada.respuestaCorrecta = updatePregunta.respuestaCorrecta
 			
-			repoPregunta.findById(idPregunta).map[pregunta | 
-				pregunta => [ 
-					opciones = updatePregunta.opciones
-					respuestaCorrecta = updatePregunta.respuestaCorrecta
-				]
-				repoPregunta.save(pregunta)
-			].orElseThrow([
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw 
-			])
+			repoPregunta.save(preguntaActualizada)
+			logService.agregarRegistro(preguntaAnterior, preguntaActualizada)
+		}catch (Exception e){
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La pregunta con ID = " + idPregunta + " no existe") // No se usa ResponseEntity porque no funciona con throw			
+		}
+ 
 	}
 	
 	@Transactional
-	def void crearPregunta(@Valid Pregunta nuevaPregunta, long idAutor, int puntos){
-			nuevaPregunta.autor = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(idAutor).orElse(null)
+	def void crearPregunta(@Valid Pregunta nuevaPregunta, int puntos){
+			nuevaPregunta.autor = usuarioService.buscarUsuarioSinAmigosNiHistorialPorId(nuevaPregunta.idAutor).orElse(null)
 			if (nuevaPregunta instanceof PreguntaSolidaria){
 				nuevaPregunta.asignarPuntos(puntos)
 			}

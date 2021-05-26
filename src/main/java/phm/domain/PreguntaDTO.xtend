@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull
 
 @Accessors
 class PreguntaDTO {
-  Long id
+  String _id
   String pregunta
   Long idAutor
   boolean activa
@@ -16,9 +16,9 @@ class PreguntaDTO {
 
   def static fromPregunta(Pregunta pregunta) {
     new PreguntaDTO => [
-      id = pregunta.id
+      _id = pregunta._id.toString()
       pregunta = pregunta.pregunta
-      idAutor = pregunta.getIdAutor()
+      idAutor = pregunta.idAutor
       activa = pregunta.estaActiva
     ]
   }

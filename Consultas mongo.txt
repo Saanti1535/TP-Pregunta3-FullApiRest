@@ -1,0 +1,30 @@
+Consulta 1:  Saber qué pregunta se modificó más.
+
+db.LogModificaciones.aggregate([ 
+    { $group: 
+        { _id: "$pregunta", 
+         count: {$sum:1}
+        }
+    },
+    { $sort: { count: -1 } }, 
+    { $limit: 1 } 
+]);
+
+--------------------------------------------------------------------------
+Consulta 2: saber cuantas preguntas de un año determinado son solidarias
+
+db.preguntas.find({
+  $and: [
+    { $expr: {$eq: ["$_class", "phm.domain.PreguntaSolidaria"]} },
+    { $expr: {$eq: [{$year: "$fechaHoraDeCreacion"}, 2021]} }
+  ]
+}).count();
+
+--------------------------------------------------------------------------
+Consulta 3:  Saber qué preguntas están habilitadas para responder a partir de una determinada fecha.
+
+{fecha="2021-05-19"
+hora="03:55:00"
+inicio = ISODate(fecha+"T"+hora+"Z")
+fin = new Date(inicio.getTime() + 1000*60*5)
+db.preguntas.find({"$and" : [{"fechaHoraDeCreacion" : {"$gte" : inicio}}, {"fechaHoraDeCreacion" : {"$lt" : fin}}]})}

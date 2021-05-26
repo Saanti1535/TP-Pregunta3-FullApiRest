@@ -23,7 +23,7 @@ class PreguntaServiceTest {
 	@Autowired
 	PreguntaRepository preguntaRepository
 	
-	@Test
+/*	@Test
 	@DisplayName("Se responde una pregunta de forma correcta")
 	def void responderPregunta() {
 		val respuesta = 'Opcion 2'
@@ -59,7 +59,7 @@ class PreguntaServiceTest {
 		
 		assertThrows(ConstraintViolationException, [preguntaService.crearPregunta(nuevaPregunta, 1L, 25)])
 	}
-	
+*/	
 //	@Test
 //	@DisplayName("Se actualiza una pregunta de forma correcta")
 //	@Transactional

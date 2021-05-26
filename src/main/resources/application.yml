@@ -11,6 +11,13 @@ spring:
     open-in-view: false
     properties: 
       hibernate: 
-        format_sql: true
+        format_sql: false
     show-sql: true
-
+  data:
+       mongodb:
+         database: pregunta3
+         port: 27001
+         repositories:
+           enabled: true
+  main:
+    allow-bean-definition-overriding: true

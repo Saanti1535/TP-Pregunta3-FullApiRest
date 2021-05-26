@@ -1,14 +1,12 @@
 package phm.domain
 
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.time.ZonedDateTime
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.format.DateTimeFormatter
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Column
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
+import java.time.LocalDateTime
 
 @Accessors
 @Entity
@@ -19,12 +17,12 @@ class RegistroRespuestas extends Entidad {
 	String pregunta
 	
 	@Column(columnDefinition = "TIMESTAMP")
-	ZonedDateTime fechaRespuesta
+	LocalDateTime fechaRespuesta
 	
 	float puntosOtorgados
 	
 	@JsonProperty("fechaRespuesta")
 	def void obtenerFechaRespuesta(String fecha) {
-		this.fechaRespuesta = ZonedDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME) 
+		this.fechaRespuesta = LocalDateTime.parse(fecha, DateTimeFormatter.ISO_OFFSET_DATE_TIME) 
 	}
 }

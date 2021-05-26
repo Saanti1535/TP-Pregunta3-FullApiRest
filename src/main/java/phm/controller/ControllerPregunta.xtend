@@ -14,6 +14,7 @@ import javax.transaction.Transactional
 import phm.service.PreguntaService
 import phm.domain.UpdatePregunta
 import phm.domain.Pregunta
+import org.bson.types.ObjectId
 
 @RestController
 @CrossOrigin
@@ -25,7 +26,6 @@ class ControllerPregunta {
 	
 	@GetMapping("/busqueda/preguntas")
 	def getTodasLasPreguntas() {
-			
 		val todasLasPreguntas = preguntaService.getTodasLasPreguntasDTO()
 		todasLasPreguntas
 	}	
@@ -41,14 +41,15 @@ class ControllerPregunta {
 	}
 	
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
-	def preguntaPorId(@PathVariable long id, @PathVariable long idUsuario) {
-			val pregunta = preguntaService.getPreguntaPorId(id, idUsuario)
+	def preguntaPorId(@PathVariable String id, @PathVariable long idUsuario) {
+			val _id = new ObjectId(id)
+			val pregunta = preguntaService.getPreguntaPorId(_id, idUsuario)
 			return pregunta
 	}
 	
 	@Transactional
 	@PostMapping("/revisarRespuesta/{idPregunta}")
-	def revisarRespuesta(@RequestBody String respuesta, @PathVariable long idPregunta) {
+	def revisarRespuesta(@RequestBody String respuesta, @PathVariable String idPregunta) {
 			var laRespuesta = Mapper.extraerStringDeJson(respuesta, "laRespuesta")
 			var idUsuario = Mapper.extraerLongDeJson(respuesta, "idUsuario")
 				
@@ -57,16 +58,16 @@ class ControllerPregunta {
 	
 	
 	@PutMapping("/busqueda/pregunta/{id}")
-	def updatePreguntaPorId(@RequestBody String body, @PathVariable long id) {		
+	def updatePreguntaPorId(@RequestBody String body, @PathVariable String id) {		
 			val updatePregunta = Mapper.mapear.readValue(body, UpdatePregunta)
 			preguntaService.updatePreguntaById(updatePregunta, id)
 			ResponseEntity.ok().build
 	}
 	
-	@PutMapping("/crearPregunta/{idAutor}/{puntos}")
-	def crearPregunta(@RequestBody String body, @PathVariable long idAutor, @PathVariable int puntos) {
+	@PutMapping("/crearPregunta/{puntos}")
+	def crearPregunta(@RequestBody String body, @PathVariable int puntos) {
 		val nuevaPregunta = Mapper.mapear.readValue(body, Pregunta)
-		preguntaService.crearPregunta(nuevaPregunta, idAutor, puntos)
+		preguntaService.crearPregunta(nuevaPregunta, puntos)
 	}
 	
 
