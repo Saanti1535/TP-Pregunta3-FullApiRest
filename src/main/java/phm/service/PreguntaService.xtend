@@ -17,6 +17,7 @@ import javax.validation.Valid
 import javax.transaction.Transactional
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
+import phm.repository.PreguntaActivaRepository
 
 @Service
 @Validated
@@ -24,6 +25,9 @@ class PreguntaService {
 
 	@Autowired
 	PreguntaRepository repoPregunta	
+	
+	@Autowired
+	PreguntaActivaRepository repoPreguntaActiva	
 	
 	@Autowired
 	UsuarioService usuarioService
@@ -46,6 +50,20 @@ class PreguntaService {
 			} else preguntas = repoPregunta.findByPreguntaContaining(busqueda)
 			
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
+	}
+	
+	def getPreguntasActivasFiltradas(String busqueda){
+		try{
+			val preguntasActivas = repoPreguntaActiva.findAll()
+			val preguntasDTO = preguntasActivas.filter[pregunta.toLowerCase().contains(busqueda.toLowerCase())].toList()
+			if(preguntasDTO.length==0){
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay preguntas activas, que contengan lo buscado")
+			}else{
+				preguntasDTO
+			}
+		}catch (Exception e){
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hubo un error en la busqueda")		
+		}
 	}
 	
 	def getPreguntaPorId(ObjectId idPregunta, long idUsuario){
@@ -124,6 +142,10 @@ class PreguntaService {
 				nuevaPregunta.asignarPuntos(puntos)
 			}
 			repoPregunta.save(nuevaPregunta)
+			val preguntaConId= repoPregunta.findByPregunta(nuevaPregunta.pregunta)
+			//Es necesario guardarla primero en mongo para que tengan el mismo id.
+			val PreguntaDTO nuevaPreguntaDTO = PreguntaDTO.fromPregunta(preguntaConId)
+			repoPreguntaActiva.save(nuevaPreguntaDTO)
 	}
 	
 }

@@ -41,7 +41,7 @@ class ControllerPregunta {
 
 		//Redis no soporta búsquedas "parciales" usando el containing, sólo exactas.
 		//Como no tiene sentido buscar por pregunta exacta, sólo usamos redis para cuando se quieren las activas sin filtrar por pregunta
-		soloActivas && busqueda.isEmpty() ? repoPreguntasActivas.findAll() : preguntaService.getPreguntasFiltradas(busqueda, soloActivas)
+		soloActivas ? preguntaService.getPreguntasActivasFiltradas(busqueda) : preguntaService.getPreguntasFiltradas(busqueda, soloActivas)
 	}
 
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")
