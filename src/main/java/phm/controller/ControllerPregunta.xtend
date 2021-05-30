@@ -16,6 +16,7 @@ import phm.domain.UpdatePregunta
 import phm.domain.Pregunta
 import org.bson.types.ObjectId
 import phm.repository.PreguntaActivaRepository
+import java.util.List
 
 @RestController
 @CrossOrigin
@@ -38,10 +39,11 @@ class ControllerPregunta {
 	def preguntasFiltradas(@RequestBody String unaBusqueda) {
 		var busqueda = Mapper.extraerStringDeJson(unaBusqueda, "unaBusqueda")
 		var soloActivas = Mapper.extraerBooleanDeJson(unaBusqueda, "soloActivas")
-
+		var List<PreguntaDTO> preguntas
 		//Redis no soporta búsquedas "parciales" usando el containing, sólo exactas.
 		//Como no tiene sentido buscar por pregunta exacta, sólo usamos redis para cuando se quieren las activas sin filtrar por pregunta
-		soloActivas ? preguntaService.getPreguntasActivasFiltradas(busqueda) : preguntaService.getPreguntasFiltradas(busqueda, soloActivas)
+		preguntas = soloActivas ? preguntaService.getPreguntasActivasFiltradas(busqueda) : preguntaService.getPreguntasFiltradas(busqueda, soloActivas)
+		return preguntas
 	}
 
 	@GetMapping("/busqueda/pregunta/{id}/{idUsuario}")

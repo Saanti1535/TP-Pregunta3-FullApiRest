@@ -18,6 +18,9 @@ import javax.transaction.Transactional
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
 import phm.repository.PreguntaActivaRepository
+import java.util.Objects
+import java.util.List
+import phm.exception.DTONotNullException
 
 @Service
 @Validated
@@ -54,15 +57,14 @@ class PreguntaService {
 	
 	def getPreguntasActivasFiltradas(String busqueda){
 		try{
-			val preguntasActivas = repoPreguntaActiva.findAll()
-			val preguntasDTO = preguntasActivas.filter[pregunta.toLowerCase().contains(busqueda.toLowerCase())].toList()
-			if(preguntasDTO.length==0){
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay preguntas activas, que contengan lo buscado")
-			}else{
-				preguntasDTO
-			}
+			val List<PreguntaDTO> preguntasActivas = repoPreguntaActiva.findAll().filter[it !== null].toList()
+			
+			preguntasActivas.isEmpty ? throw new DTONotNullException("No hay preguntas activas, que contengan lo buscado")
+			preguntasActivas.filter[pregunta.toLowerCase().contains(busqueda.toLowerCase())].toList()
 		}catch (Exception e){
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hubo un error en la busqueda")		
+			if(e.getClass == DTONotNullException){
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay preguntas activas, que contengan lo buscado")
+			} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hubo un error en la busqueda")	
 		}
 	}
 	
