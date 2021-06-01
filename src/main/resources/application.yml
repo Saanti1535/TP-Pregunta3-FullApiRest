@@ -19,5 +19,22 @@ spring:
          port: 27001
          repositories:
            enabled: true
+       neo4j:
+         uri: bolt://localhost:7687
+         username: neo4j
+         password: clave
+
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    timeout: 50000
+
   main:
     allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org.springframework.data: DEBUG
+    org.neo4j: DEBUG
+

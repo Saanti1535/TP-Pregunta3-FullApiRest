@@ -4,10 +4,19 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
 import javax.validation.constraints.Size
 import javax.validation.constraints.NotNull
+import org.springframework.data.annotation.Id
+import org.springframework.data.redis.core.RedisHash
+import org.springframework.data.redis.core.TimeToLive
 
 @Accessors
+@RedisHash("PreguntaActiva")
 class PreguntaDTO {
+  @Id
   String _id
+  
+  @TimeToLive
+  long segundosDeVigencia = Pregunta.minutosDeVigencia * 60 // El TTL funciona con segundos
+  
   String pregunta
   Long idAutor
   boolean activa
