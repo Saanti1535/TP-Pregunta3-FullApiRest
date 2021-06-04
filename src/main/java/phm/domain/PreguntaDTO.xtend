@@ -15,7 +15,7 @@ class PreguntaDTO {
   String _id
   
   @TimeToLive
-  long segundosDeVigencia = Pregunta.minutosDeVigencia * 60 // El TTL funciona con segundos
+  Long segundosDeVigencia = Pregunta.minutosDeVigencia * 60// El TTL funciona con segundos
   
   String pregunta
   Long idAutor

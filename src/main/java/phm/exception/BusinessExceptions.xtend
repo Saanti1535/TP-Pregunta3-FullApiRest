@@ -6,7 +6,7 @@ class BusinessExceptions extends Exception{
 	}
 }
 
-class DTONotNullException extends Exception{
+class DTONullException extends Exception{
 	new(String mensaje) {
 		super(mensaje)
 	}

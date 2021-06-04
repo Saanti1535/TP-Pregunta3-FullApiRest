@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.http.HttpStatus
 import javax.validation.ConstraintViolationException
+import phm.exception.DTONullException
 
 @ControllerAdvice
 class ExceptionControllerAdvice {
@@ -24,6 +25,16 @@ class ExceptionControllerAdvice {
 		return new ResponseEntity<String>(mensajeDeErrorEnValidacion(excepcion.message), HttpStatus.BAD_REQUEST)
 	}
 	
+	@ExceptionHandler(DTONullException)
+	def ResponseEntity<String> handleDTONullException(DTONullException excepcion){
+		return new ResponseEntity<String>(excepcion.message, HttpStatus.BAD_REQUEST)
+	}
+	
+//	@ExceptionHandler(Exception)
+//	def ResponseEntity<String> handleAllExceptions(Exception excepcion){
+//		return new ResponseEntity<String>("Hubo un error interno en el servidor", HttpStatus.INTERNAL_SERVER_ERROR)
+//	}
+	 
 	private def mensajeDeErrorEnValidacion(String mensaje){
 		val int indiceComienzoError = mensaje.indexOf(": ") + 1
 		mensaje.substring(indiceComienzoError)
