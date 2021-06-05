@@ -6,6 +6,7 @@ services:
         container_name: neo4j
         volumes:
             - ./neo4j/data:/data
+            - ./neo4j/import:/import
         environment:
             NEO4J_AUTH: neo4j/clave
             NEO4J_BOLT_PORT_NUMBER: "7687"
