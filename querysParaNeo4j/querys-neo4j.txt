@@ -1,14 +1,14 @@
 Querys para carga de datos
 (Los archivos .csv tiene que estar en la carpeta ../neo4j/import que se crea al levantar el docker-compose)
 
-LOAD CSV WITH HEADERS FROM 'file:///usuario.csv' AS row MERGE (c:Usuario {username: row.Username});
+LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row MERGE (c:Usuario {username: row.Username});
 LOAD CSV WITH HEADERS FROM 'file:///preguntas.csv' AS row MERGE (c:Pregunta {pregunta: row.Pregunta,tipo:row.Tipo, puntaje:row.Puntaje, fecha:row.Fecha});
 LOAD CSV WITH HEADERS FROM 'file:///relacionAutor.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:AUTOR]->(c);
 LOAD CSV WITH HEADERS FROM 'file:///relacionRespondio.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:RESPONDIO]->(c);
-LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {username: row.UsernameAmigo}) MERGE (e)-[r:AMIGO]->(c);
-LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {username: row.UsernameAmigo}) MERGE (c)-[r:AMIGO]->(e);
+LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Usuario {username: row.UsernameAmigo}) MERGE (e)-[r:AMIGO]->(c);
+LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Usuario {username: row.UsernameAmigo}) MERGE (c)-[r:AMIGO]->(e);
 
 Querys de consultas:
 Integrante 1 - Nahuel.
-WITH -500 as tiempoLimite, 202105281420 as fechaDeHoy, "Pep" as nombreDeUsuario  MATCH (c:Usuario{username:nombreDeUsuario}), (e:Pregunta)  WHERE not((c)-[:RESPONDIO]->(e)) and toInteger(e.fecha)>(fechaDeHoy+tiempoLimite) return e 
+WITH -5 as tiempoLimite, 202105281420 as fechaDeHoy, "Pep" as nombreDeUsuario  MATCH (c:Usuario{username:nombreDeUsuario}), (e:Pregunta)  WHERE not((c)-[:RESPONDIO]->(e)) and toInteger(e.fecha)>(fechaDeHoy+tiempoLimite) return e 
 WITH "Pep" as nombreDeUsuario MATCH (c:Usuario{username:nombreDeUsuario}), (e:Usuario) ,(d:Usuario) WHERE (c)-[:AMIGO]->(d) and (d)-[:AMIGO]->(e) and not((c)-[:AMIGO]->(e))  and c<>e and not((e)-[:AUTOR]->(:Pregunta)) RETURN e
