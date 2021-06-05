@@ -1,7 +1,7 @@
 Querys para carga de datos
 (Los archivos .csv tiene que estar en la carpeta ../neo4j/import que se crea al levantar el docker-compose)
 
-LOAD CSV WITH HEADERS FROM 'fileWITH:///usuarios.csv' AS row MERGE (c:Usuario {username: row.Username});
+LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row MERGE (c:Usuario {username: row.Username});
 LOAD CSV WITH HEADERS FROM 'file:///preguntas.csv' AS row MERGE (c:Pregunta {pregunta: row.Pregunta,tipo:row.Tipo, puntaje:row.Puntaje, fecha:row.Fecha});
 LOAD CSV WITH HEADERS FROM 'file:///relacionAutor.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:AUTOR]->(c);
 LOAD CSV WITH HEADERS FROM 'file:///relacionRespondio.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:RESPONDIO]->(c);
