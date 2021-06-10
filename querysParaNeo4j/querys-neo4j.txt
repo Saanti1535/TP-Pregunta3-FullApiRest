@@ -80,4 +80,4 @@ Segunda query:
 with "Juan" as nombreDeUsuario
 match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
 where (usuario)-[:RESPONDIO]->(pregunta)
-return pregunta.tipo
+return distinct pregunta.tipo as Tipo
