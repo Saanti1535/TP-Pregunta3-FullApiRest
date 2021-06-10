@@ -70,3 +70,14 @@ Preguntas de Ceci que dan más de 50 puntos: La 27
 ********************************************************************************************************************************************************
 Integrante 3
 ********************************************************************************************************************************************************
+Primer query:
+with "Juan" as nombreDeUsuario
+match (usuario: Usuario), (juan:Usuario{username:nombreDeUsuario}), (pregunta:Pregunta)
+where (usuario)-[:RESPONDIO]->(pregunta) AND (juan)-[:RESPONDIO]->(pregunta)
+return usuario
+
+Segunda query:
+with "Juan" as nombreDeUsuario
+match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
+where (usuario)-[:RESPONDIO]->(pregunta)
+return pregunta.tipo
