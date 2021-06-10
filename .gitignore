@@ -5,3 +5,4 @@ bin
 generated*
 .settings
 xtend-gen/
+/neo4j/
