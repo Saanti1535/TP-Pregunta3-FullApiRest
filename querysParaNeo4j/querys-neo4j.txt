@@ -28,6 +28,11 @@ MATCH (c:Usuario{username:nombreDeUsuario}), (e:Usuario) ,(d:Usuario)
 WHERE (c)-[:AMIGO]->(d) AND (d)-[:AMIGO]->(e) AND NOT((c)-[:AMIGO]->(e)) AND c<>e AND NOT((e)-[:AUTOR]->(:Pregunta)) 
 RETURN e
 
+alternativa:
+WITH "Pep" AS nombreDeUsuario 
+MATCH (c:Usuario{username:nombreDeUsuario})-[:AMIGO*2]->(e) WHERE NOT EXISTS ((c)-[:AMIGO]->(e)) AND c<>e AND NOT EXISTS ((e)-[:AUTOR]->(:Pregunta)) 
+RETURN e
+
 ********************************************************************************************************************************************************
 Integrante 2 - Santi López
 ********************************************************************************************************************************************************
@@ -73,7 +78,13 @@ Integrante 3
 Primer query:
 with "Juan" as nombreDeUsuario
 match (usuario: Usuario), (juan:Usuario{username:nombreDeUsuario}), (pregunta:Pregunta)
-where (usuario)-[:RESPONDIO]->(pregunta) AND (juan)-[:RESPONDIO]->(pregunta)
+where (usuario)-[:RESPONDIO]->(pregunta) AND (juan)-[:RESPONDIO]->(pregunta) AND juan<>usuario
+return usuario
+
+alternativa:
+with "Juan" as nombreDeUsuario
+match (usuario: Usuario), (juan:Usuario{username:nombreDeUsuario}), (pregunta:Pregunta)
+where (usuario)-[:RESPONDIO]->(pregunta)<-[:RESPONDIO]-(juan)
 return usuario
 
 Segunda query:
@@ -81,3 +92,9 @@ with "Juan" as nombreDeUsuario
 match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
 where (usuario)-[:RESPONDIO]->(pregunta)
 return distinct pregunta.tipo as Tipo
+
+alternativa:
+with "Juan" as nombreDeUsuario
+match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
+where (usuario)-[:RESPONDIO]->(pregunta)
+return pregunta.tipo as Tipo, count(pregunta.tipo) as Cantidad
