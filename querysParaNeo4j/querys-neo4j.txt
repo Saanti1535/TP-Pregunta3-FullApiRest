@@ -15,9 +15,9 @@ Integrante 1 - Nahuel.
 ********************************************************************************************************************************************************
 Primera query:
 
-WITH -5 AS tiempoLimite, 202105281420 AS fechaDeHoy, "Pep" AS nombreDeUsuario 
+WITH duration({minutes: 5}) AS duration, datetime() AS fechaDeHoy, "Pep" AS nombreDeUsuario 
 MATCH (c:Usuario{username:nombreDeUsuario}), (e:Pregunta)  
-WHERE NOT((c)-[:RESPONDIO]->(e)) AND toInteger(e.fecha) > (fechaDeHoy+tiempoLimite) 
+WHERE NOT((c)-[:RESPONDIO]->(e)) AND datetime(e.fecha)+duration > fechaDeHoy
 RETURN e 
 
 
