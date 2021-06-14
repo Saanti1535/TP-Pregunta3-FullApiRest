@@ -20,7 +20,6 @@ import javax.persistence.CascadeType
 import javax.persistence.JoinColumn
 
 @Accessors //Este Accessors es necesario para pegarle desde el repo en memoria
-
 @Entity
 @Table(name="usuario")
 class Usuario extends Entidad {

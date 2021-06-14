@@ -15,6 +15,8 @@ import phm.domain.Pregunta
 import org.springframework.beans.factory.InitializingBean
 import phm.repository.RegistroRespuestasRepository
 import java.time.ZonedDateTime
+import phm.repository.PreguntaActivaRepository
+import phm.service.PreguntaService
 
 @Service
 class Bootstrap implements InitializingBean{
@@ -24,7 +26,11 @@ class Bootstrap implements InitializingBean{
 	@Autowired
 	PreguntaRepository repoPreguntas
 	@Autowired
+	PreguntaActivaRepository repoPreguntasActivas
+	@Autowired
 	RegistroRespuestasRepository repoRegistroRespuestas
+	@Autowired
+	PreguntaService preguntaService
 	
 	var liliana = new Usuario => [
 		username = 'liliana';
@@ -189,8 +195,9 @@ class Bootstrap implements InitializingBean{
 		crearUsuario(juana)
 	}
 	
-	def initPreguntas(){ 
+	def initPreguntas(){		
 		repoPreguntas.deleteAll()
+		repoPreguntasActivas.deleteAll()
 		asignarPuntos()
 		crearPregunta(pregunta01)
 		crearPregunta(pregunta02)
@@ -199,7 +206,7 @@ class Bootstrap implements InitializingBean{
 		crearPregunta(pregunta05)
 		crearPregunta(pregunta06)
 		crearPregunta(pregunta07)
-		crearPregunta(pregunta08)
+		crearPregunta(pregunta08)	
 	}
 	
 	def initRegistros(){
@@ -260,6 +267,8 @@ class Bootstrap implements InitializingBean{
 			initRegistros()
 			initUsuarios()
 			initPreguntas()
+			val todasLasPreguntas = preguntaService.getTodasLasPreguntasDTO()
+			todasLasPreguntas.forEach[pregunta | repoPreguntasActivas.save(pregunta)]	
 		}	
 	}
 	

@@ -17,6 +17,9 @@ import javax.validation.Valid
 import javax.transaction.Transactional
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
+import phm.repository.PreguntaActivaRepository
+import java.util.List
+import phm.exception.DTONullException
 
 @Service
 @Validated
@@ -24,6 +27,9 @@ class PreguntaService {
 
 	@Autowired
 	PreguntaRepository repoPregunta	
+	
+	@Autowired
+	PreguntaActivaRepository repoPreguntaActiva	
 	
 	@Autowired
 	UsuarioService usuarioService
@@ -48,17 +54,22 @@ class PreguntaService {
 			return preguntas.map [ PreguntaDTO.fromPregunta(it) ]		
 	}
 	
+	def getPreguntasActivasFiltradas(String busqueda){
+			val List<PreguntaDTO> preguntasActivas = repoPreguntaActiva.findAll().toList()
+			preguntasActivas.isEmpty ? throw new DTONullException("No hay preguntas activas, que contengan lo buscado")
+			preguntasActivas.filter[pregunta.toLowerCase().contains(busqueda.toLowerCase())].toList()
+	}
+	
 	def getPreguntaPorId(ObjectId idPregunta, long idUsuario){
 			var Pregunta pregunta
 			try{
 				pregunta = repoPregunta.findBy_id(idPregunta)
-				System.out.println(pregunta)
 			}catch (Exception e){
 				return new ResponseEntity<String>("Id de pregunta inexistente", HttpStatus.BAD_REQUEST)			
 			}
 			
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
-			var Usuario autor = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
+			var Usuario autor = usuarioService.buscarUsuarioSinLosAmigosPorId(pregunta.idAutor).orElse(null)
 			
 			pregunta.opciones = Arrays.asList(pregunta.opciones)
 			
@@ -75,17 +86,20 @@ class PreguntaService {
 	
 	def verificarRespuesta(String laRespuesta, String idPregunta, long idUsuario){
 			var pregunta = repoPregunta.findById(idPregunta).get()
+			pregunta.autor = usuarioService.buscarUsuarioSinLosAmigosPorId(pregunta.idAutor).orElse(null)
 			var Usuario usuario = usuarioService.buscarUsuarioSinLosAmigosPorId(idUsuario).orElse(null)
 			
 			if (pregunta.estaActiva) {
 				
 				pregunta.responder(usuario, laRespuesta)
-				usuarioService.actualizar(usuario) //Actualizacion del historial	
+				usuarioService.actualizar(usuario) //Actualizacion del historial
+				
 				
 				var String esRespuesta
 				
 				if(pregunta.esRespuestaCorrecta(laRespuesta)){
-					esRespuesta = 'Correcto'				
+					esRespuesta = 'Correcto'
+					usuarioService.actualizar(pregunta.autor)		
 				}else{
 					esRespuesta = 'Incorrecto'
 				}	
@@ -124,6 +138,10 @@ class PreguntaService {
 				nuevaPregunta.asignarPuntos(puntos)
 			}
 			repoPregunta.save(nuevaPregunta)
+			val preguntaConId= repoPregunta.findByPregunta(nuevaPregunta.pregunta)
+			//Es necesario guardarla primero en mongo para que tengan el mismo id.
+			val PreguntaDTO nuevaPreguntaDTO = PreguntaDTO.fromPregunta(preguntaConId)
+			repoPreguntaActiva.save(nuevaPreguntaDTO)
 	}
 	
 }

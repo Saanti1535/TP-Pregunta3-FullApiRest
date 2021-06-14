@@ -1,0 +1,100 @@
+Querys para carga de datos
+(Los archivos .csv tiene que estar en la carpeta ../neo4j/import que se crea al levantar el docker-compose)
+
+LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row MERGE (c:Usuario {username: row.Username});
+LOAD CSV WITH HEADERS FROM 'file:///preguntas.csv' AS row MERGE (c:Pregunta {pregunta: row.Pregunta,tipo:row.Tipo, puntaje:row.Puntaje, fecha:row.Fecha});
+LOAD CSV WITH HEADERS FROM 'file:///relacionAutor.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:AUTOR]->(c);
+LOAD CSV WITH HEADERS FROM 'file:///relacionRespondio.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Pregunta {pregunta: row.Pregunta}) MERGE (e)-[r:RESPONDIO]->(c);
+LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Usuario {username: row.UsernameAmigo}) MERGE (e)-[r:AMIGO]->(c);
+LOAD CSV WITH HEADERS FROM 'file:///relacionAmigo.csv' AS row MERGE (e:Usuario {username: row.Username}) MERGE (c:Usuario {username: row.UsernameAmigo}) MERGE (c)-[r:AMIGO]->(e);
+
+********************************************************************************************************************************************************
+Querys de consultas:
+********************************************************************************************************************************************************
+Integrante 1 - Nahuel.
+********************************************************************************************************************************************************
+Primera query:
+
+WITH duration({minutes: 5}) AS duration, datetime() AS fechaDeHoy, "Pep" AS nombreDeUsuario 
+MATCH (c:Usuario{username:nombreDeUsuario}), (e:Pregunta)  
+WHERE NOT((c)-[:RESPONDIO]->(e)) AND datetime(e.fecha)+duration > fechaDeHoy
+RETURN e 
+
+
+Segunda query:
+
+WITH "Pep" AS nombreDeUsuario 
+MATCH (c:Usuario{username:nombreDeUsuario}), (e:Usuario) ,(d:Usuario) 
+WHERE (c)-[:AMIGO]->(d) AND (d)-[:AMIGO]->(e) AND NOT((c)-[:AMIGO]->(e)) AND c<>e AND NOT((e)-[:AUTOR]->(:Pregunta)) 
+RETURN e
+
+alternativa:
+WITH "Pep" AS nombreDeUsuario 
+MATCH (c:Usuario{username:nombreDeUsuario})-[:AMIGO*2]->(e) WHERE NOT EXISTS ((c)-[:AMIGO]->(e)) AND c<>e AND NOT EXISTS ((e)-[:AUTOR]->(:Pregunta)) 
+RETURN e
+
+********************************************************************************************************************************************************
+Integrante 2 - Santi López
+********************************************************************************************************************************************************
+Primera query:
+
+WITH "Juan" AS nombreUsuario, "Solidaria" AS tipoPreguntaABuscar 
+MATCH (usuario: Usuario {username: nombreUsuario}), (pregunta: Pregunta {tipo: tipoPreguntaABuscar}), (amigo: Usuario)
+WHERE (usuario)-[:AMIGO]->(amigo) AND (amigo)-[:RESPONDIO]->(pregunta) AND NOT((usuario)-[:RESPONDIO]->(pregunta)) 
+RETURN pregunta
+
+Amigos de Juan: Charly, Ceci, Juana
+Juan respondió 23 y 24
+Charly no respondió ninguna
+Ceci la 26
+Juana la 23
+Preguntas que no respondió Juan y sí alguno de sus amigos = 26
+
+
+Para buscar amigos del usuario: 
+MATCH (usuario: Usuario{username:"Juan"}), (amigo: Usuario) 
+WHERE (usuario)-[:AMIGO]->(amigo) 
+RETURN amigo
+
+Para buscar preguntas solidarias respondidas por usuario: 
+MATCH (usuario: Usuario{username:"Juana"}), (pregunta: Pregunta{tipo:"Solidaria"}) 
+WHERE (usuario)-[:RESPONDIO]->(pregunta) 
+RETURN pregunta
+
+
+Segunda query:
+
+WITH "Ceci" AS nombreUsuario, 50 AS puntosABuscar
+MATCH (usuario: Usuario {username: nombreUsuario}), (pregunta: Pregunta)
+WHERE (usuario)-[:AUTOR]->(pregunta) AND toInteger(pregunta.puntaje) >= puntosABuscar
+RETURN pregunta
+
+Ceci tiene dos preguntas, una (la 17) que da 10pts y otra (la 27) que da 80pts. 
+Preguntas de Ceci que dan más de 50 puntos: La 27
+
+********************************************************************************************************************************************************
+Integrante 3
+********************************************************************************************************************************************************
+Primer query:
+with "Juan" as nombreDeUsuario
+match (usuario: Usuario), (juan:Usuario{username:nombreDeUsuario}), (pregunta:Pregunta)
+where (usuario)-[:RESPONDIO]->(pregunta) AND (juan)-[:RESPONDIO]->(pregunta) AND juan<>usuario
+return usuario
+
+alternativa:
+with "Juan" as nombreDeUsuario
+match (usuario: Usuario), (juan:Usuario{username:nombreDeUsuario}), (pregunta:Pregunta)
+where (usuario)-[:RESPONDIO]->(pregunta)<-[:RESPONDIO]-(juan)
+return usuario
+
+Segunda query:
+with "Juan" as nombreDeUsuario
+match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
+where (usuario)-[:RESPONDIO]->(pregunta)
+return distinct pregunta.tipo as Tipo
+
+alternativa:
+with "Juan" as nombreDeUsuario
+match (pregunta:Pregunta), (usuario:Usuario{username:nombreDeUsuario})
+where (usuario)-[:RESPONDIO]->(pregunta)
+return pregunta.tipo as Tipo, count(pregunta.tipo) as Cantidad
