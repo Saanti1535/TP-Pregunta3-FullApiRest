@@ -27,7 +27,7 @@ import org.bson.types.ObjectId
 abstract class Pregunta{
 	
 	@Transient
-	public static final long minutosDeVigencia = 1
+	public static final long minutosDeVigencia = 5
 	
 	@Id
 	@Accessors ObjectId _id
